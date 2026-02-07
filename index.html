@@ -2,14 +2,12 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VentPro Pro</title>
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1063/1063231.png">
     <style>
         :root { --primary: #4a90e2; --secondary: #2c3e50; --success: #6ab04c; --bg: #1e272e; --text: #f5f6fa; --accent: #fbc531; --danger: #e84118; }
         
-        
-        /* APP-FIXAR START */
         body { 
             font-family: 'Segoe UI', sans-serif; 
             background: var(--bg); 
@@ -19,14 +17,11 @@
             display: flex; 
             flex-direction: column; 
             align-items: center;
-            touch-action: manipulation; /* Tar bort dubbelklick-zoom */
-            user-select: none; /* Hindrar att man råkar markera text */
-            -webkit-tap-highlight-color: transparent; /* Tar bort blå blixt vid klick */
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        input, select { 
-            user-select: text !important; /* Gör att man fortfarande kan skriva i fält */
-        }
-        /* APP-FIXAR SLUT */
+        input, select { user-select: text !important; }
 
         .card { background: #2f3640; padding: 15px; border-radius: 12px; width: 100%; max-width: 480px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-top: 5px solid var(--primary); }
         h2 { text-align: center; color: var(--primary); margin: 0 0 15px 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; }
@@ -36,10 +31,6 @@
         .btn-calc { width: 100%; padding: 18px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; background: var(--success); color: white; text-transform: uppercase; box-shadow: 0 4px 0 #4d8237; }
         .btn-calc:active { transform: translateY(2px); box-shadow: none; }
         .btn-save { background: var(--primary); color: white; margin-top: 10px; display: none; padding: 12px; border:none; border-radius:8px; width:100%; font-weight:bold; cursor:pointer; }
-        #res { margin-top: 20px; padding: 15px; background: #353b48; border-left: 5px solid var(--primary); border-radius: 5px; line-height: 1.6; }
-        .highlight { color: var(--accent); font-size: 1.4rem; font-weight: bold; }
-        .canvas-container { background: #ffffff; margin-top: 15px; border-radius: 8px; padding: 10px; display: none; width: 100%; }
-        canvas { width: 100%; height: auto; display: block; }
         .log-section { width: 100%; max-width: 480px; margin-top: 20px; }
         .log-item { background: #353b48; padding: 12px; border-radius: 8px; margin-bottom: 8px; position: relative; border-left: 4px solid var(--accent); font-size: 0.85rem; }
         .delete-btn { position: absolute; right: 12px; top: 12px; color: var(--danger); font-weight: bold; cursor: pointer; font-size: 1.2rem; }
@@ -49,17 +40,32 @@
 
 <div class="card">
     <h2>VENTPRO PRO</h2>
+    <div style="display:flex; gap:5px; margin-bottom:15px;">
+        <button id="tabRund" onclick="bytTyp('rund')" style="flex:1; padding:10px; border:none; border-radius:8px; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">RUND</button>
+        <button id="tabRekt" onclick="bytTyp('rekt')" style="flex:1; padding:10px; border:none; border-radius:8px; background:#353b48; color:white; font-weight:bold; cursor:pointer;">REKT</button>
+    </div>
     
     <label>Märkning</label>
     <input type="text" id="labelName" placeholder="T.ex. Kök, Plan 2...">
 
-    <label>Dimension (Ø)</label>
-    <select id="dim">
-        <option value="100">100</option><option value="125">125</option><option value="160">160</option>
-        <option value="200" selected>200</option><option value="250">250</option><option value="315">315</option>
-        <option value="400">400</option><option value="500">500</option>
-    </select>
+    <div id="rundInputs">
+        <label>Dimension (Ø)</label>
+        <select id="dim">
+            <option value="100">100</option><option value="125">125</option><option value="160">160</option>
+            <option value="200" selected>200</option><option value="250">250</option><option value="315">315</option>
+            <option value="400">400</option><option value="500">500</option>
+        </select>
+    </div>
 
+    <div id="rektInputs" style="display:none;">
+        <div class="row">
+            <div style="flex:1"><label>Utslag (mm)</label><input type="number" id="utslag" placeholder="Ex: 400" oninput="foreslaRadie()" inputmode="decimal"></div>
+            <div style="flex:1"><label>Svep (mm)</label><input type="number" id="svep" placeholder="Ex: 300" inputmode="decimal"></div>
+        </div>
+        <label>Radie (mm) - Centrum</label>
+<input type="number" id="radie" placeholder="Ex: 100" value="100" inputmode="decimal">
+        <small style="display:block; color:#bdc3c7; font-size:0.6rem; margin-top:2px;">(Baseras på standard r-in 100 mm. Ändra manuellt vid behov)</small>
+    </div>
     <div class="row">
         <div style="flex:1"><label>Vinkel 1</label><select id="v1"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
         <div style="flex:1"><label>Vinkel 2</label><select id="v2"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
@@ -72,17 +78,17 @@
 
     <button class="btn-calc" onclick="berakna()">BERÄKNA KAPMÅTT</button>
 
-    <div id="res">Mata in mått för resultat.</div>
+    <div id="resBox" style="display:none; background:#353b48; margin-top:20px; padding:15px; border-left:5px solid var(--accent); border-radius:8px; line-height:1.8;">
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #444; padding-bottom:5px;">
+            <span>KAPMÅTT (L):</span> <strong style="color:var(--accent); font-size:1.5rem;" id="resKap">0 mm</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;"><span>Dimension:</span> <strong id="resDim">Ø200</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Vinklar:</span> <strong id="resVinklar">45° & 45°</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>C-C Mått:</span> <strong id="resCC">0 mm</strong></div>
+    </div>
+
     <button id="saveBtn" class="btn-save" onclick="sparaLogg()">SPARA I LOGGBOKEN</button>
     <button class="btn-save" style="background:var(--danger); margin-top:10px; display:block;" onclick="rensaLogg()">NOLLSTÄLL LOGGBOKEN</button>
-    <div id="resBox" style="display:none; background:#353b48; margin-top:20px; padding:15px; border-left:5px solid var(--accent); border-radius:8px; line-height:1.8;">
-    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #444; padding-bottom:5px;">
-        <span>KAPMÅTT (L):</span> <strong style="color:var(--accent); font-size:1.5rem;" id="resKap">0 mm</strong>
-    </div>
-    <div style="display:flex; justify-content:space-between;"><span>Dimension:</span> <strong id="resDim">Ø200</strong></div>
-    <div style="display:flex; justify-content:space-between;"><span>Vinklar:</span> <strong id="resVinklar">45° & 45°</strong></div>
-    <div style="display:flex; justify-content:space-between;"><span>C-C Mått:</span> <strong id="resCC">0 mm</strong></div>
-</div>
 </div>
 
 <div class="log-section">
@@ -92,20 +98,35 @@
 
 <script>
     let aktuellData = null;
+    let aktuellTyp = 'rund';
 
-    // Ladda loggen när man öppnar appen
+    function bytTyp(typ) {
+        aktuellTyp = typ;
+        document.getElementById('rundInputs').style.display = typ === 'rund' ? 'block' : 'none';
+        document.getElementById('rektInputs').style.display = typ === 'rekt' ? 'block' : 'none';
+        document.getElementById('tabRund').style.background = typ === 'rund' ? 'var(--primary)' : '#353b48';
+        document.getElementById('tabRekt').style.background = typ === 'rekt' ? 'var(--primary)' : '#353b48';
+    }
+
+    function foreslaRadie() {
+        const utslag = parseFloat(document.getElementById('utslag').value) || 0;
+        const radieFalt = document.getElementById('radie');
+        if (utslag > 0) {
+            radieFalt.value = 100 + (utslag / 2);
+        }
+    }
 
     function rensaLogg() {
-    if(confirm("Vill du verkligen radera alla sparade kapningar?")) {
-        localStorage.removeItem('ventLogg');
-        visaLogg();
+        if(confirm("Vill du verkligen radera alla sparade kapningar?")) {
+            localStorage.removeItem('ventLogg');
+            visaLogg();
+        }
     }
-}
 
     window.onload = () => { visaLogg(); }
 
     function berakna() {
-        const d = parseInt(document.getElementById('dim').value);
+        let d, a1, a2;
         const v1 = parseInt(document.getElementById('v1').value);
         const v2 = parseInt(document.getElementById('v2').value);
         const sid = parseFloat(document.getElementById('sid').value) || 0;
@@ -114,23 +135,31 @@
 
         if (sid === 0 && hojd === 0) return;
 
-        const a1 = Math.tan((v1 / 2) * (Math.PI / 180)) * d;
-        const a2 = Math.tan((v2 / 2) * (Math.PI / 180)) * d;
+        if (aktuellTyp === 'rund') {
+            d = parseInt(document.getElementById('dim').value);
+            a1 = Math.tan((v1 / 2) * (Math.PI / 180)) * d;
+            a2 = Math.tan((v2 / 2) * (Math.PI / 180)) * d;
+        } else {
+            const utslag = parseFloat(document.getElementById('utslag').value) || 0;
+            const r = parseFloat(document.getElementById('radie').value) || 0;
+            d = utslag;
+            a1 = r * Math.tan((v1 / 2) * (Math.PI / 180));
+            a2 = r * Math.tan((v2 / 2) * (Math.PI / 180));
+        }
+
         const offset = Math.sqrt(Math.pow(sid, 2) + Math.pow(hojd, 2));
         const vAvg = (v1 + v2) / 2;
         const cc = offset / Math.sin(vAvg * (Math.PI / 180));
         const kap = Math.round(cc - (a1 + a2));
 
-        aktuellData = { label, d, v1, v2, kap, cc: Math.round(cc), offset: Math.round(offset), tid: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
+        aktuellData = { label, d, v1, v2, kap: (kap > 0 ? kap : 0), cc: Math.round(cc), offset: Math.round(offset), tid: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
 
-          // Uppdatera den nya resultat-tabellen
-    document.getElementById('resBox').style.display = 'block';
-    document.getElementById('resKap').innerText = (kap > 0 ? kap : 0) + " mm";
-    document.getElementById('resDim').innerText = "Ø" + d;
-    document.getElementById('resVinklar').innerText = v1 + "° & " + v2 + "°";
-   document.getElementById('resCC').innerText = Math.round(cc) + " mm";
-    
-    document.getElementById('saveBtn').style.display = 'block';
+        document.getElementById('resBox').style.display = 'block';
+        document.getElementById('resKap').innerText = aktuellData.kap + " mm";
+        document.getElementById('resDim').innerText = aktuellTyp === 'rund' ? "Ø" + d : d + " (Utslag)";
+        document.getElementById('resVinklar').innerText = v1 + "° & " + v2 + "°";
+        document.getElementById('resCC').innerText = aktuellData.cc + " mm";
+        document.getElementById('saveBtn').style.display = 'block';
     }
 
     function sparaLogg() {
@@ -139,6 +168,7 @@
         logg.unshift(aktuellData);
         localStorage.setItem('ventLogg', JSON.stringify(logg));
         visaLogg();
+        alert("Sparat i loggboken!");
     }
 
     function visaLogg() {
@@ -147,7 +177,7 @@
         list.innerHTML = logg.map((item, index) => `
             <div class="log-item">
                 <strong>${item.label}</strong> (${item.tid})<br>
-                Ø${item.d} | Vinkel: ${item.v1}° | Kap: <span style="color:var(--accent)">${item.kap}mm</span>
+                ${item.d} mm | ${item.v1}°/${item.v2}° | Kap: <span style="color:var(--accent)">${item.kap}mm</span>
                 <span class="delete-btn" onclick="radera(${index})">×</span>
             </div>
         `).join('');
@@ -158,59 +188,6 @@
         logg.splice(index, 1);
         localStorage.setItem('ventLogg', JSON.stringify(logg));
         visaLogg();
-    }
-
-           function renderPro(v, l, cc, d, offset) {
-        const canvas = document.getElementById('sketchCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // --- GEOMETRI ---
-        const pipeW = d / 3.5;  const rad = 100;  const muff = 45;
-        const angle = v * (Math.PI / 180);
-        const displayL = Math.min(l * 0.35, 140); 
-        const x = 150; const y = 380;
-
-        // 1. RITA HELA RÖRET SOM EN TJOCK BLÅ LINJE (Garanterat noll glipor!)
-        ctx.beginPath();
-        ctx.strokeStyle = '#1e3799'; 
-        ctx.lineWidth = pipeW;
-        ctx.lineCap = 'butt';
-        ctx.lineJoin = 'round';
-
-        ctx.moveTo(x, y);
-        ctx.lineTo(x, y - muff);
-        ctx.arc(x + rad, y - muff, rad, Math.PI, Math.PI + angle);
-        
-        const curX = x + rad + Math.cos(Math.PI + angle) * rad;
-        const curY = y - muff + Math.sin(Math.PI + angle) * rad;
-        const nextX = curX + Math.sin(angle) * displayL;
-        const nextY = curY - Math.cos(angle) * displayL;
-        ctx.lineTo(nextX, nextY);
-
-        const c2x = nextX - rad * Math.cos(angle);
-        const c2y = nextY + rad * Math.sin(angle);
-        ctx.arc(c2x, c2y, rad, -angle, 0);
-        
-        ctx.lineTo(c2x + rad, c2y - muff);
-        ctx.stroke();
-
-        // 2. VITA SKARVAR (Ritas ovanpå den blå linjen)
-        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
-        const drawS = (sx, sy, a) => {
-            ctx.save(); ctx.translate(sx, sy); ctx.rotate(a);
-            ctx.beginPath(); ctx.moveTo(-pipeW/2, 0); ctx.lineTo(pipeW/2, 0); ctx.stroke();
-            ctx.restore();
-        };
-        drawS(x, y - muff, 0); 
-        drawS(curX, curY, angle); 
-        drawS(nextX, nextY, angle); 
-        drawS(c2x + rad, c2y, 0); 
-
-        // 3. TEXT
-        ctx.fillStyle = '#4a90e2'; ctx.font = "bold 16px Arial"; ctx.textAlign = "center";
-        ctx.fillText(`KAP L = ${l} mm`, c2x + rad, c2y - muff - 15);
-        ctx.fillText(`Ø${d}`, x, y + 25);
     }
 </script>
 </body>
