@@ -34,6 +34,10 @@
         .log-section { width: 100%; max-width: 480px; margin-top: 20px; }
         .log-item { background: #353b48; padding: 12px; border-radius: 8px; margin-bottom: 8px; position: relative; border-left: 4px solid var(--accent); font-size: 0.85rem; }
         .delete-btn { position: absolute; right: 12px; top: 12px; color: var(--danger); font-weight: bold; cursor: pointer; font-size: 1.2rem; }
+        
+        /* Specifikt för Order-fliken */
+        .order-btn-add { padding: 10px; font-size: 0.7rem; background: #4b5563; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .order-btn-add:active { background: var(--primary); }
     </style>
 </head>
 <body>
@@ -43,41 +47,93 @@
     <div style="display:flex; gap:5px; margin-bottom:15px;">
         <button id="tabRund" onclick="bytTyp('rund')" style="flex:1; padding:10px; border:none; border-radius:8px; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">RUND</button>
         <button id="tabRekt" onclick="bytTyp('rekt')" style="flex:1; padding:10px; border:none; border-radius:8px; background:#353b48; color:white; font-weight:bold; cursor:pointer;">REKT</button>
+        <button id="tabOrder" onclick="bytTyp('order')" style="flex:1; padding:10px; border:none; border-radius:8px; background:#353b48; color:white; font-weight:bold; cursor:pointer;">BESTÄLL</button>
     </div>
     
-    <label>Märkning</label>
-    <input type="text" id="labelName" placeholder="T.ex. Kök, Plan 2...">
+    <div id="calcContainer">
+        <label>Märkning</label>
+        <input type="text" id="labelName" placeholder="T.ex. Kök, Plan 2...">
 
-    <div id="rundInputs">
-        <label>Dimension (Ø)</label>
-        <select id="dim">
-            <option value="100">100</option><option value="125">125</option><option value="160">160</option>
-            <option value="200" selected>200</option><option value="250">250</option><option value="315">315</option>
-            <option value="400">400</option><option value="500">500</option>
-        </select>
-    </div>
-
-    <div id="rektInputs" style="display:none;">
-        <div class="row">
-            <div style="flex:1"><label>Utslag (mm)</label><input type="number" id="utslag" placeholder="Ex: 400" oninput="foreslaRadie()" inputmode="decimal"></div>
-            <div style="flex:1"><label>Svep (mm)</label><input type="number" id="svep" placeholder="Ex: 300" inputmode="decimal"></div>
+        <div id="rundInputs">
+            <label>Dimension (Ø)</label>
+            <select id="dim">
+                <option value="100">100</option><option value="125">125</option><option value="160">160</option>
+                <option value="200" selected>200</option><option value="250">250</option><option value="315">315</option>
+                <option value="400">400</option><option value="500">500</option>
+            </select>
         </div>
-        <label>Radie (mm) - Centrum</label>
-<input type="number" id="radie" placeholder="Ex: 100" value="100" inputmode="decimal">
-        <small style="display:block; color:#bdc3c7; font-size:0.6rem; margin-top:2px;">(Baseras på standard r-in 100 mm. Ändra manuellt vid behov)</small>
-    </div>
-    <div class="row">
-        <div style="flex:1"><label>Vinkel 1</label><select id="v1"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
-        <div style="flex:1"><label>Vinkel 2</label><select id="v2"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
+
+        <div id="rektInputs" style="display:none;">
+            <div class="row">
+                <div style="flex:1"><label>Utslag (mm)</label><input type="number" id="utslag" placeholder="Ex: 400" oninput="foreslaRadie()" inputmode="decimal"></div>
+                <div style="flex:1"><label>Svep (mm)</label><input type="number" id="svep" placeholder="Ex: 300" inputmode="decimal"></div>
+            </div>
+            <label>Radie (mm) - Centrum</label>
+            <input type="number" id="radie" placeholder="Ex: 100" value="100" inputmode="decimal">
+            <small style="display:block; color:#bdc3c7; font-size:0.6rem; margin-top:2px;">(Baseras på standard r-in 100 mm. Ändra manuellt vid behov)</small>
+        </div>
+
+        <div id="commonInputs">
+            <div class="row">
+                <div style="flex:1"><label>Vinkel 1</label><select id="v1"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
+                <div style="flex:1"><label>Vinkel 2</label><select id="v2"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
+            </div>
+            <div class="row">
+                <div style="flex:1"><label>Sida (mm)</label><input type="number" id="sid" placeholder="Ex: 500" inputmode="decimal"></div>
+                <div style="flex:1"><label>Höjd (mm)</label><input type="number" id="hojd" placeholder="Ex: 0" inputmode="decimal"></div>
+            </div>
+            <button class="btn-calc" onclick="berakna()">BERÄKNA KAPMÅTT</button>
+        </div>
     </div>
 
-    <div class="row">
-        <div style="flex:1"><label>Sida (mm)</label><input type="number" id="sid" placeholder="Ex: 500" inputmode="decimal"></div>
-        <div style="flex:1"><label>Höjd (mm)</label><input type="number" id="hojd" placeholder="Ex: 0" inputmode="decimal"></div>
+    <!-- BESTÄLLNINGS-FLIK (OBEROENDE) -->
+    <div id="orderInputs" style="display:none;">
+        <div style="background:#353b48; padding:15px; border-radius:12px; border:1px solid var(--primary); margin-bottom:15px;">
+            <h3 style="color:var(--accent); margin-top:0; font-size:0.9rem; text-transform:uppercase;">Välj Dimension för delar</h3>
+            <div class="row" style="margin-bottom:10px;">
+                <div style="flex:1">
+                    <label>Typ</label>
+                    <select id="orderTypSelector" onchange="bytOrderDimFalt()">
+                        <option value="rund">RUND (Ø)</option>
+                        <option value="rekt">REKT (BxH)</option>
+                    </select>
+                </div>
+                <div style="flex:1" id="orderDimRundDiv">
+                    <label>Dim (Ø)</label>
+                    <select id="orderDimRund">
+                        <option value="100">100</option><option value="125">125</option><option value="160">160</option>
+                        <option value="200" selected>200</option><option value="250">250</option><option value="315">315</option>
+                        <option value="400">400</option><option value="500">500</option>
+                    </select>
+                </div>
+                <div style="flex:1; display:none;" id="orderDimRektDiv">
+                    <label>Mått (BxH)</label>
+                    <input type="text" id="orderDimRekt" placeholder="Ex: 400x300">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <button class="order-btn-add" onclick="laggTillArtikel('Böj 90°')">+ Böj 90°</button>
+                <button class="order-btn-add" onclick="laggTillArtikel('Böj 45°')">+ Böj 45°</button>
+                <button class="order-btn-add" onclick="laggTillArtikel('Nippel')">+ Nippel</button>
+                <button class="order-btn-add" onclick="laggTillArtikel('Muff')">+ Muff</button>
+                <button class="order-btn-add" onclick="laggTillArtikel('T-rör')">+ T-rör</button>
+                <button class="order-btn-add" onclick="laggTillArtikel('Sadelavstick')">+ Sadelavstick</button>
+                <button class="order-btn-add" onclick="laggTillArtikel('Planavstick')">+ Planavstick</button>
+            </div>
+        </div>
+
+        <div style="background:#353b48; padding:15px; border-radius:12px; border:1px solid var(--accent);">
+            <h3 style="color:var(--accent); margin-top:0; font-size:0.9rem; text-transform:uppercase;">Dagens Behov</h3>
+            <div id="orderListUI" style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+                <p style="text-align:center; color:#bdc3c7; font-size:0.8rem;">Listan är tom</p>
+            </div>
+            <button onclick="kopieraOrder()" style="width:100%; padding:12px; background:var(--success); border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer; text-transform:uppercase;">Kopiera till SMS</button>
+            <button onclick="rensaOrder()" style="width:100%; margin-top:10px; padding:8px; background:var(--danger); border:none; border-radius:8px; color:white; font-size:0.7rem; cursor:pointer; text-transform:uppercase;">Rensa listan</button>
+        </div>
     </div>
 
-    <button class="btn-calc" onclick="berakna()">BERÄKNA KAPMÅTT</button>
-
+    <!-- Resultat för kapning -->
     <div id="resBox" style="display:none; background:#353b48; margin-top:20px; padding:15px; border-left:5px solid var(--accent); border-radius:8px; line-height:1.8;">
         <div style="display:flex; justify-content:space-between; border-bottom:1px solid #444; padding-bottom:5px;">
             <span>KAPMÅTT (L):</span> <strong style="color:var(--accent); font-size:1.5rem;" id="resKap">0 mm</strong>
@@ -88,7 +144,6 @@
     </div>
 
     <button id="saveBtn" class="btn-save" onclick="sparaLogg()">SPARA I LOGGBOKEN</button>
-    <button class="btn-save" style="background:var(--danger); margin-top:10px; display:block;" onclick="rensaLogg()">NOLLSTÄLL LOGGBOKEN</button>
 </div>
 
 <div class="log-section">
@@ -99,28 +154,99 @@
 <script>
     let aktuellData = null;
     let aktuellTyp = 'rund';
+    let orderData = {}; // Sparar artiklar som {"Ø200 Böj 90°": 2}
 
     function bytTyp(typ) {
         aktuellTyp = typ;
-        document.getElementById('rundInputs').style.display = typ === 'rund' ? 'block' : 'none';
-        document.getElementById('rektInputs').style.display = typ === 'rekt' ? 'block' : 'none';
+        const isOrder = typ === 'order';
+        
+        // Visa/Dölj rätt container
+        document.getElementById('calcContainer').style.display = isOrder ? 'none' : 'block';
+        document.getElementById('orderInputs').style.display = isOrder ? 'block' : 'none';
+        document.getElementById('resBox').style.display = 'none';
+        document.getElementById('saveBtn').style.display = 'none';
+
+        if (!isOrder) {
+            document.getElementById('rundInputs').style.display = typ === 'rund' ? 'block' : 'none';
+            document.getElementById('rektInputs').style.display = typ === 'rekt' ? 'block' : 'none';
+        }
+
+        // Färg på flik-knappar
         document.getElementById('tabRund').style.background = typ === 'rund' ? 'var(--primary)' : '#353b48';
         document.getElementById('tabRekt').style.background = typ === 'rekt' ? 'var(--primary)' : '#353b48';
+        document.getElementById('tabOrder').style.background = typ === 'order' ? 'var(--primary)' : '#353b48';
+        
+        if(isOrder) ritaOrderLista();
     }
 
+    // ORDER LOGIK
+    function bytOrderDimFalt() {
+        const typ = document.getElementById('orderTypSelector').value;
+        document.getElementById('orderDimRundDiv').style.display = typ === 'rund' ? 'block' : 'none';
+        document.getElementById('orderDimRektDiv').style.display = typ === 'rekt' ? 'block' : 'none';
+    }
+
+    function laggTillArtikel(namn) {
+        const typ = document.getElementById('orderTypSelector').value;
+        let dim = "";
+        if(typ === 'rund') {
+            dim = "Ø" + document.getElementById('orderDimRund').value;
+        } else {
+            dim = document.getElementById('orderDimRekt').value || "Mått?";
+        }
+        const fulltNamn = dim + " " + namn;
+        orderData[fulltNamn] = (orderData[fulltNamn] || 0) + 1;
+        ritaOrderLista();
+    }
+
+    function andraAntalOrder(key, delta) {
+        orderData[key] = Math.max(0, orderData[key] + delta);
+        if(orderData[key] === 0) delete orderData[key];
+        ritaOrderLista();
+    }
+
+    function ritaOrderLista() {
+        const ui = document.getElementById('orderListUI');
+        const keys = Object.keys(orderData);
+        if(keys.length === 0) {
+            ui.innerHTML = '<p style="text-align:center; color:#bdc3c7; font-size:0.8rem;">Listan är tom</p>';
+            return;
+        }
+        ui.innerHTML = keys.map(key => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#2f3640; padding:10px; border-radius:8px; border:1px solid #444;">
+                <span style="font-size:0.85rem;">${key}</span>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <button onclick="andraAntalOrder('${key}', -1)" style="width:30px; height:30px; border-radius:6px; border:none; background:var(--danger); color:white; font-weight:bold;">-</button>
+                    <span style="font-weight:bold; color:var(--accent); min-width:20px; text-align:center;">${orderData[key]}</span>
+                    <button onclick="andraAntalOrder('${key}', 1)" style="width:30px; height:30px; border-radius:6px; border:none; background:var(--success); color:white; font-weight:bold;">+</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function rensaOrder() {
+        if(confirm("Vill du rensa hela beställningen?")) {
+            orderData = {};
+            ritaOrderLista();
+        }
+    }
+
+    function kopieraOrder() {
+        let text = "🛠 BESTÄLLNING VENTILATION:\n";
+        const keys = Object.keys(orderData);
+        if(keys.length === 0) { alert("Listan är tom!"); return; }
+        keys.forEach(key => {
+            text += `• ${orderData[key]}st ${key}\n`;
+        });
+        navigator.clipboard.writeText(text);
+        alert("Beställningen kopierad!");
+    }
+
+    // KAPNING LOGIK
     function foreslaRadie() {
         const utslag = parseFloat(document.getElementById('utslag').value) || 0;
         const radieFalt = document.getElementById('radie');
-        if (utslag > 0) {
-            radieFalt.value = 100 + (utslag / 2);
-        }
-    }
-
-    function rensaLogg() {
-        if(confirm("Vill du verkligen radera alla sparade kapningar?")) {
-            localStorage.removeItem('ventLogg');
-            visaLogg();
-        }
+        if (utslag > 0) radieFalt.value = 100 + (utslag / 2);
     }
 
     window.onload = () => { visaLogg(); }
@@ -168,7 +294,7 @@
         logg.unshift(aktuellData);
         localStorage.setItem('ventLogg', JSON.stringify(logg));
         visaLogg();
-        alert("Sparat i loggboken!");
+        alert("Sparat!");
     }
 
     function visaLogg() {
