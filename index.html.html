@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VentPro Pro</title>
+    <style>
+        :root { --primary: #4a90e2; --secondary: #2c3e50; --success: #6ab04c; --bg: #1e272e; --text: #f5f6fa; --accent: #fbc531; --danger: #e84118; }
+        
+        /* APP-FIXAR START */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            touch-action: manipulation; /* Tar bort dubbelklick-zoom */
+            user-select: none; /* Hindrar att man råkar markera text */
+            -webkit-tap-highlight-color: transparent; /* Tar bort blå blixt vid klick */
+        }
+        input, select { 
+            user-select: text !important; /* Gör att man fortfarande kan skriva i fält */
+        }
+        /* APP-FIXAR SLUT */
+
+        .card { background: #2f3640; padding: 15px; border-radius: 12px; width: 100%; max-width: 480px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-top: 5px solid var(--primary); }
+        h2 { text-align: center; color: var(--primary); margin: 0 0 15px 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; }
+        label { display: block; margin-top: 10px; font-size: 0.7rem; color: #bdc3c7; font-weight: bold; text-transform: uppercase; }
+        input, select { width: 100%; padding: 14px; margin-top: 5px; border-radius: 8px; border: none; font-size: 1rem; background: #f5f6fa; color: #2f3640; box-sizing: border-box; }
+        .row { display: flex; gap: 10px; }
+        .btn-calc { width: 100%; padding: 18px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; background: var(--success); color: white; text-transform: uppercase; box-shadow: 0 4px 0 #4d8237; }
+        .btn-calc:active { transform: translateY(2px); box-shadow: none; }
+        .btn-save { background: var(--primary); color: white; margin-top: 10px; display: none; padding: 12px; border:none; border-radius:8px; width:100%; font-weight:bold; cursor:pointer; }
+        #res { margin-top: 20px; padding: 15px; background: #353b48; border-left: 5px solid var(--primary); border-radius: 5px; line-height: 1.6; }
+        .highlight { color: var(--accent); font-size: 1.4rem; font-weight: bold; }
+        .canvas-container { background: #ffffff; margin-top: 15px; border-radius: 8px; padding: 10px; display: none; width: 100%; }
+        canvas { width: 100%; height: auto; display: block; }
+        .log-section { width: 100%; max-width: 480px; margin-top: 20px; }
+        .log-item { background: #353b48; padding: 12px; border-radius: 8px; margin-bottom: 8px; position: relative; border-left: 4px solid var(--accent); font-size: 0.85rem; }
+        .delete-btn { position: absolute; right: 12px; top: 12px; color: var(--danger); font-weight: bold; cursor: pointer; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>VENTPRO PRO</h2>
+    
+    <label>Märkning</label>
+    <input type="text" id="labelName" placeholder="T.ex. Kök, Plan 2...">
+
+    <label>Dimension (Ø)</label>
+    <select id="dim">
+        <option value="100">100</option><option value="125">125</option><option value="160">160</option>
+        <option value="200" selected>200</option><option value="250">250</option><option value="315">315</option>
+        <option value="400">400</option><option value="500">500</option>
+    </select>
+
+    <div class="row">
+        <div style="flex:1"><label>Vinkel 1</label><select id="v1"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
+        <div style="flex:1"><label>Vinkel 2</label><select id="v2"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option></select></div>
+    </div>
+
+    <div class="row">
+        <div style="flex:1"><label>Sida (mm)</label><input type="number" id="sid" placeholder="Ex: 500" inputmode="decimal"></div>
+        <div style="flex:1"><label>Höjd (mm)</label><input type="number" id="hojd" placeholder="Ex: 0" inputmode="decimal"></div>
+    </div>
+
+    <button class="btn-calc" onclick="berakna()">BERÄKNA & RENDERA</button>
+
+    <div id="res">Mata in mått för resultat.</div>
+    <button id="saveBtn" class="btn-save" onclick="sparaLogg()">SPARA I LOGGBOKEN</button>
+
+    <div class="canvas-container" id="sketchBox">
+        <canvas id="sketchCanvas" width="600" height="450"></canvas>
+    </div>
+</div>
+
+<div class="log-section">
+    <h3 style="color:var(--accent); font-size: 0.9rem; text-transform: uppercase;">Sparade kapningar</h3>
+    <div id="logList"></div>
+</div>
+
+<script>
+    let aktuellData = null;
+
+    // Ladda loggen när man öppnar appen
+    window.onload = () => { visaLogg(); }
+
+    function berakna() {
+        const d = parseInt(document.getElementById('dim').value);
+        const v1 = parseInt(document.getElementById('v1').value);
+        const v2 = parseInt(document.getElementById('v2').value);
+        const sid = parseFloat(document.getElementById('sid').value) || 0;
+        const hojd = parseFloat(document.getElementById('hojd').value) || 0;
+        const label = document.getElementById('labelName').value || "Onamngiven";
+
+        if (sid === 0 && hojd === 0) return;
+
+        const a1 = Math.tan((v1 / 2) * (Math.PI / 180)) * d;
+        const a2 = Math.tan((v2 / 2) * (Math.PI / 180)) * d;
+        const offset = Math.sqrt(Math.pow(sid, 2) + Math.pow(hojd, 2));
+        const vAvg = (v1 + v2) / 2;
+        const cc = offset / Math.sin(vAvg * (Math.PI / 180));
+        const kap = Math.round(cc - (a1 + a2));
+
+        aktuellData = { label, d, v1, v2, kap, cc: Math.round(cc), offset: Math.round(offset), tid: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
+
+        document.getElementById('res').innerHTML = `<strong>KAPMÅTT L: <span class="highlight">${kap > 0 ? kap : 0} mm</span></strong><br><small>CC: ${Math.round(cc)} mm | Offset: ${Math.round(offset)} mm</small>`;
+        document.getElementById('saveBtn').style.display = 'block';
+        
+        renderPro(vAvg, kap, cc, d, offset);
+        document.getElementById('sketchBox').style.display = 'block';
+    }
+
+    function sparaLogg() {
+        if (!aktuellData) return;
+        let logg = JSON.parse(localStorage.getItem('ventLogg') || '[]');
+        logg.unshift(aktuellData);
+        localStorage.setItem('ventLogg', JSON.stringify(logg));
+        visaLogg();
+    }
+
+    function visaLogg() {
+        let logg = JSON.parse(localStorage.getItem('ventLogg') || '[]');
+        const list = document.getElementById('logList');
+        list.innerHTML = logg.map((item, index) => `
+            <div class="log-item">
+                <strong>${item.label}</strong> (${item.tid})<br>
+                Ø${item.d} | Vinkel: ${item.v1}° | Kap: <span style="color:var(--accent)">${item.kap}mm</span>
+                <span class="delete-btn" onclick="radera(${index})">×</span>
+            </div>
+        `).join('');
+    }
+
+    function radera(index) {
+        let logg = JSON.parse(localStorage.getItem('ventLogg') || '[]');
+        logg.splice(index, 1);
+        localStorage.setItem('ventLogg', JSON.stringify(logg));
+        visaLogg();
+    }
+
+    function renderPro(v, l, cc, d, offset) {
+        const canvas = document.getElementById('sketchCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const scale = 0.55;
+        const pipeW = d * scale;
+        const startX = 120, startY = 350;
+        const rad = (90 - v) * (Math.PI / 180);
+        const drawCC = cc * scale;
+        
+        const endX = startX + Math.cos(rad) * drawCC;
+        const endY = startY - Math.sin(rad) * drawCC;
+
+        function drawPipeSegment(x1, y1, x2, y2, width) {
+            const grad = ctx.createLinearGradient(x1, y1, x1 + (y2-y1), y1 - (x2-x1));
+            grad.addColorStop(0, '#b2bec3'); grad.addColorStop(0.5, '#dfe6e9'); grad.addColorStop(1, '#636e72');
+            ctx.strokeStyle = grad; ctx.lineWidth = width; ctx.lineCap = 'butt';
+            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        }
+
+        drawPipeSegment(startX - 60, startY, startX, startY, pipeW);
+        drawPipeSegment(startX, startY, endX, endY, pipeW);
+        drawPipeSegment(endX, endY, endX + 80, endY, pipeW);
+
+        ctx.setLineDash([5,5]); ctx.strokeStyle = '#00a8ff'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(startX - 70, startY); ctx.lineTo(startX, startY); ctx.lineTo(endX, endY); ctx.lineTo(endX + 90, endY); ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.strokeStyle = '#2d3436'; ctx.fillStyle = '#2d3436'; ctx.lineWidth = 1.2;
+        drawArrowLine(ctx, startX, startY + 50, endX, endY + 50, `L = ${l}mm`);
+    }
+
+    function drawArrowLine(ctx, x1, y1, x2, y2, label) {
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.fillText(label, (x1+x2)/2 - 20, (y1+y2)/2 - 10);
+    }
+</script>
+</body>
+</html>
