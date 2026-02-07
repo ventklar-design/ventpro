@@ -8,6 +8,7 @@
     <style>
         :root { --primary: #4a90e2; --secondary: #2c3e50; --success: #6ab04c; --bg: #1e272e; --text: #f5f6fa; --accent: #fbc531; --danger: #e84118; }
         
+        
         /* APP-FIXAR START */
         body { 
             font-family: 'Segoe UI', sans-serif; 
@@ -69,14 +70,19 @@
         <div style="flex:1"><label>Höjd (mm)</label><input type="number" id="hojd" placeholder="Ex: 0" inputmode="decimal"></div>
     </div>
 
-    <button class="btn-calc" onclick="berakna()">BERÄKNA & RENDERA</button>
+    <button class="btn-calc" onclick="berakna()">BERÄKNA KAPMÅTT</button>
 
     <div id="res">Mata in mått för resultat.</div>
     <button id="saveBtn" class="btn-save" onclick="sparaLogg()">SPARA I LOGGBOKEN</button>
-
-    <div class="canvas-container" id="sketchBox">
-        <canvas id="sketchCanvas" width="600" height="450"></canvas>
+    <button class="btn-save" style="background:var(--danger); margin-top:10px; display:block;" onclick="rensaLogg()">NOLLSTÄLL LOGGBOKEN</button>
+    <div id="resBox" style="display:none; background:#353b48; margin-top:20px; padding:15px; border-left:5px solid var(--accent); border-radius:8px; line-height:1.8;">
+    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #444; padding-bottom:5px;">
+        <span>KAPMÅTT (L):</span> <strong style="color:var(--accent); font-size:1.5rem;" id="resKap">0 mm</strong>
     </div>
+    <div style="display:flex; justify-content:space-between;"><span>Dimension:</span> <strong id="resDim">Ø200</strong></div>
+    <div style="display:flex; justify-content:space-between;"><span>Vinklar:</span> <strong id="resVinklar">45° & 45°</strong></div>
+    <div style="display:flex; justify-content:space-between;"><span>C-C Mått:</span> <strong id="resCC">0 mm</strong></div>
+</div>
 </div>
 
 <div class="log-section">
@@ -88,6 +94,14 @@
     let aktuellData = null;
 
     // Ladda loggen när man öppnar appen
+
+    function rensaLogg() {
+    if(confirm("Vill du verkligen radera alla sparade kapningar?")) {
+        localStorage.removeItem('ventLogg');
+        visaLogg();
+    }
+}
+
     window.onload = () => { visaLogg(); }
 
     function berakna() {
@@ -109,11 +123,14 @@
 
         aktuellData = { label, d, v1, v2, kap, cc: Math.round(cc), offset: Math.round(offset), tid: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
 
-        document.getElementById('res').innerHTML = `<strong>KAPMÅTT L: <span class="highlight">${kap > 0 ? kap : 0} mm</span></strong><br><small>CC: ${Math.round(cc)} mm | Offset: ${Math.round(offset)} mm</small>`;
-        document.getElementById('saveBtn').style.display = 'block';
-        
-        renderPro(vAvg, kap, cc, d, offset);
-        document.getElementById('sketchBox').style.display = 'block';
+          // Uppdatera den nya resultat-tabellen
+    document.getElementById('resBox').style.display = 'block';
+    document.getElementById('resKap').innerText = (kap > 0 ? kap : 0) + " mm";
+    document.getElementById('resDim').innerText = "Ø" + d;
+    document.getElementById('resVinklar').innerText = v1 + "° & " + v2 + "°";
+   document.getElementById('resCC').innerText = Math.round(cc) + " mm";
+    
+    document.getElementById('saveBtn').style.display = 'block';
     }
 
     function sparaLogg() {
@@ -143,45 +160,58 @@
         visaLogg();
     }
 
-    function renderPro(v, l, cc, d, offset) {
+           function renderPro(v, l, cc, d, offset) {
         const canvas = document.getElementById('sketchCanvas');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        const scale = 0.55;
-        const pipeW = d * scale;
-        const startX = 120, startY = 350;
-        const rad = (90 - v) * (Math.PI / 180);
-        const drawCC = cc * scale;
+        // --- GEOMETRI ---
+        const pipeW = d / 3.5;  const rad = 100;  const muff = 45;
+        const angle = v * (Math.PI / 180);
+        const displayL = Math.min(l * 0.35, 140); 
+        const x = 150; const y = 380;
+
+        // 1. RITA HELA RÖRET SOM EN TJOCK BLÅ LINJE (Garanterat noll glipor!)
+        ctx.beginPath();
+        ctx.strokeStyle = '#1e3799'; 
+        ctx.lineWidth = pipeW;
+        ctx.lineCap = 'butt';
+        ctx.lineJoin = 'round';
+
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y - muff);
+        ctx.arc(x + rad, y - muff, rad, Math.PI, Math.PI + angle);
         
-        const endX = startX + Math.cos(rad) * drawCC;
-        const endY = startY - Math.sin(rad) * drawCC;
+        const curX = x + rad + Math.cos(Math.PI + angle) * rad;
+        const curY = y - muff + Math.sin(Math.PI + angle) * rad;
+        const nextX = curX + Math.sin(angle) * displayL;
+        const nextY = curY - Math.cos(angle) * displayL;
+        ctx.lineTo(nextX, nextY);
 
-        function drawPipeSegment(x1, y1, x2, y2, width) {
-            const grad = ctx.createLinearGradient(x1, y1, x1 + (y2-y1), y1 - (x2-x1));
-            grad.addColorStop(0, '#b2bec3'); grad.addColorStop(0.5, '#dfe6e9'); grad.addColorStop(1, '#636e72');
-            ctx.strokeStyle = grad; ctx.lineWidth = width; ctx.lineCap = 'butt';
-            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        }
+        const c2x = nextX - rad * Math.cos(angle);
+        const c2y = nextY + rad * Math.sin(angle);
+        ctx.arc(c2x, c2y, rad, -angle, 0);
+        
+        ctx.lineTo(c2x + rad, c2y - muff);
+        ctx.stroke();
 
-        drawPipeSegment(startX - 60, startY, startX, startY, pipeW);
-        drawPipeSegment(startX, startY, endX, endY, pipeW);
-        drawPipeSegment(endX, endY, endX + 80, endY, pipeW);
+        // 2. VITA SKARVAR (Ritas ovanpå den blå linjen)
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+        const drawS = (sx, sy, a) => {
+            ctx.save(); ctx.translate(sx, sy); ctx.rotate(a);
+            ctx.beginPath(); ctx.moveTo(-pipeW/2, 0); ctx.lineTo(pipeW/2, 0); ctx.stroke();
+            ctx.restore();
+        };
+        drawS(x, y - muff, 0); 
+        drawS(curX, curY, angle); 
+        drawS(nextX, nextY, angle); 
+        drawS(c2x + rad, c2y, 0); 
 
-        ctx.setLineDash([5,5]); ctx.strokeStyle = '#00a8ff'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.moveTo(startX - 70, startY); ctx.lineTo(startX, startY); ctx.lineTo(endX, endY); ctx.lineTo(endX + 90, endY); ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.strokeStyle = '#2d3436'; ctx.fillStyle = '#2d3436'; ctx.lineWidth = 1.2;
-        drawArrowLine(ctx, startX, startY + 50, endX, endY + 50, `L = ${l}mm`);
-    }
-
-    function drawArrowLine(ctx, x1, y1, x2, y2, label) {
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        ctx.fillText(label, (x1+x2)/2 - 20, (y1+y2)/2 - 10);
+        // 3. TEXT
+        ctx.fillStyle = '#4a90e2'; ctx.font = "bold 16px Arial"; ctx.textAlign = "center";
+        ctx.fillText(`KAP L = ${l} mm`, c2x + rad, c2y - muff - 15);
+        ctx.fillText(`Ø${d}`, x, y + 25);
     }
 </script>
 </body>
 </html>
-
-
