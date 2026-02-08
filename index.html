@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Pro - Klar Edition</title>
+    <title>VentPro Pro - Full Edition</title>
     <style>
         :root { 
             --accent: #fbc531; --primary: #4a90e2; --bg: #0d0d0d; 
@@ -15,13 +15,13 @@
         .display-area { 
             background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 1px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             padding: 10px; text-align: center; position: relative;
         }
 
-        .res-label { font-size: 0.55rem; color: var(--accent); letter-spacing: 2px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
+        .res-label { font-size: 0.65rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
         .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 8px; }
-        .res-extra { font-size: 1rem; color: #fbc531; font-weight: bold; margin-bottom: 4px; }
+        .res-extra { font-size: 1rem; color: var(--accent); font-weight: bold; margin-bottom: 4px; }
         .res-sub { font-size: 0.75rem; color: #666; font-weight: bold; }
 
         .tab-row { display: flex; gap: 8px; margin-bottom: 15px; }
@@ -42,7 +42,6 @@
         .plus-btn { background: #1a1a1a; border: 1px solid #333; color: #ddd; padding: 12px 4px; border-radius: 6px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
         .plus-btn:active { transform: scale(0.95); }
         
-        /* Färgkodning material */
         .btn-special { border-color: var(--primary); color: var(--primary); }
         .btn-bend { border-color: #9b59b6; color: #9b59b6; }
         .btn-tube { border-color: #2ecc71; color: #2ecc71; }
@@ -51,20 +50,19 @@
         .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 10px; }
         .list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 0.85rem; }
         .qty { background: var(--accent); color: #000; font-weight: bold; padding: 2px 8px; border-radius: 4px; margin-right: 12px; min-width: 20px; text-align: center; }
-        .del-btn { color: var(--danger); background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 0 10px; margin-left: auto; }
+        .del-btn { color: var(--danger); background: none; border: none; font-size: 1.3rem; cursor: pointer; margin-left: auto; }
         
-        .calc-btn { width: 100%; padding: 16px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .clear-link { display: block; width: 100%; background: none; color: #555; border: none; margin-top: 12px; font-size: 0.7rem; cursor: pointer; text-decoration: underline; text-align: center; }
-        
+        .calc-btn { width: 100%; padding: 16px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-success-flash { background: var(--success) !important; color: white !important; }
+        .clear-link { display: block; width: 100%; background: none; color: #555; border: none; margin-top: 12px; font-size: 0.7rem; cursor: pointer; text-decoration: underline; text-align: center; }
     </style>
 </head>
 <body onload="loadData()">
 
 <div class="card">
-    <div class="display-area">
-        <div class="res-label">Kapmått L (Mellan sick)</div>
+    <div class="display-area" id="displayBox">
+        <div class="res-label" id="warningLabel">Kapmått L (Mellan sick)</div>
         <div class="res-main" id="valL">0 mm</div>
         <div class="res-extra" id="valBuild">Byggmått: 0 mm</div>
         <div class="res-sub" id="valCC">C-C: 0 mm</div>
@@ -84,8 +82,9 @@
                 <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
             </select>
         </div>
-        <div class="field" id="u-box" style="display:none;"><label>U-Mått</label><input type="number" id="u" placeholder="mm" oninput="ar();calc()"></div>
-        <div class="field" id="r-box" style="display:none;"><label>Radie</label><input type="number" id="r" placeholder="mm" oninput="calc()"></div>
+        
+        <div class="field" id="u-box" style="display:none;"><label>U-Mått (Bredd)</label><input type="number" id="u" placeholder="mm" oninput="calc()"></div>
+        <div class="field" id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" placeholder="Auto" oninput="calc()"></div>
         
         <div class="field"><label>Vinkel 1</label>
             <select id="v1" onchange="calc()">
@@ -139,7 +138,7 @@
 </div>
 
 <div class="section-title" style="color:#444;">Historik (Senaste 5)</div>
-<div id="logList" class="list-container" style="width:100%; max-width:480px; margin-bottom: 40px; border-color: #222;"></div>
+<div id="logList" class="list-container" style="width:100%; max-width:480px; margin-bottom: 40px;"></div>
 
 <script>
     let mode = 'rund';
@@ -159,29 +158,53 @@
     function resetInputs() {
         document.getElementById('s').value = '';
         document.getElementById('h').value = '';
+        document.getElementById('u').value = '';
+        document.getElementById('r').value = '';
         resetDisplay();
     }
 
     function calc() {
-        const d = document.getElementById('d').value;
+        const d = parseFloat(document.getElementById('d').value);
         const v1 = parseFloat(document.getElementById('v1').value), v2 = parseFloat(document.getElementById('v2').value);
         const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0;
+        const u = parseFloat(document.getElementById('u').value)||0;
+        const rField = document.getElementById('r');
+        const displayBox = document.getElementById('displayBox');
+        const warningLabel = document.getElementById('warningLabel');
         
         if(s === 0 && h === 0) { resetDisplay(); return; }
 
-        let a1, a2;
+        let a1, a2, currentR;
         if(mode === 'rund') {
-            a1 = Math.tan((v1/2)*(Math.PI/180)) * d; a2 = Math.tan((v2/2)*(Math.PI/180)) * d;
+            a1 = Math.tan((v1/2)*(Math.PI/180)) * d; 
+            a2 = Math.tan((v2/2)*(Math.PI/180)) * d;
         } else {
-            const r = parseFloat(document.getElementById('r').value)||0;
-            a1 = r * Math.tan((v1/2)*(Math.PI/180)); a2 = r * Math.tan((v2/2)*(Math.PI/180));
+            if (!rField.value) {
+                currentR = (u > 600) ? 150 : 100;
+                rField.placeholder = currentR + " (Auto)";
+            } else {
+                currentR = parseFloat(rField.value);
+            }
+            a1 = currentR * Math.tan((v1/2)*(Math.PI/180)); 
+            a2 = currentR * Math.tan((v2/2)*(Math.PI/180));
         }
 
         const offset = Math.sqrt(s*s + h*h);
         const avgV = (v1 + v2) / 2;
         const cc = offset / Math.sin(avgV * (Math.PI/180));
-        const l = Math.max(0, Math.round(cc - (a1 + a2)));
+        const rawL = cc - (a1 + a2);
+        const l = Math.max(0, Math.round(rawL));
         const bygg = Math.round(offset / Math.tan(avgV * (Math.PI/180)) + a1 + a2);
+
+        if (rawL < 0) {
+            displayBox.style.borderColor = "var(--danger)";
+            warningLabel.innerText = "FÖR KORT AVSTÅND!";
+            warningLabel.style.color = "var(--danger)";
+        } else {
+            displayBox.style.borderColor = "#444";
+            warningLabel.innerText = "Kapmått L (Mellan sick)";
+            warningLabel.style.color = "var(--accent)";
+        }
 
         document.getElementById('valL').innerText = l + " mm";
         document.getElementById('valBuild').innerText = "Byggmått: " + bygg + " mm";
@@ -192,6 +215,9 @@
         document.getElementById('valL').innerText = "0 mm";
         document.getElementById('valBuild').innerText = "Byggmått: 0 mm";
         document.getElementById('valCC').innerText = "C-C: 0 mm";
+        document.getElementById('displayBox').style.borderColor = "#444";
+        document.getElementById('warningLabel').innerText = "Kapmått L (Mellan sick)";
+        document.getElementById('warningLabel').style.color = "var(--accent)";
     }
 
     function logCalculation() {
@@ -199,33 +225,27 @@
         if(l === "0 mm") return;
         const s = document.getElementById('s').value || 0, h = document.getElementById('h').value || 0;
         const v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
-        logs.unshift(`${v1}°/${v2}° | S:${s} H:${h} ➔ L:${l}`);
+        logs.unshift(`${mode.toUpperCase()} ${v1}°/${v2}° | S:${s} H:${h} ➔ L:${l}`);
         if(logs.length > 5) logs.pop();
         flashButton('saveBtn');
         save();
     }
 
     function addQuick(name) {
-        let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt";
+        let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt " + (document.getElementById('u').value || "");
         let noDim = ['SCHAKT-S', 'Skruv', 'Hålband', 'Silikon'];
         let key = noDim.includes(name) ? name : `${dim} ${name}`;
         orders[key] = (orders[key] || 0) + 1;
         save();
     }
 
-    function flashButton(id) {
-        const b = document.getElementById(id);
-        b.classList.add('btn-success-flash');
-        setTimeout(() => b.classList.remove('btn-success-flash'), 500);
-    }
-
     function save() {
-        localStorage.setItem('vent_final_v11', JSON.stringify({orders, logs}));
+        localStorage.setItem('vent_final_v13', JSON.stringify({orders, logs}));
         render();
     }
 
     function loadData() {
-        const data = JSON.parse(localStorage.getItem('vent_final_v11') || '{}');
+        const data = JSON.parse(localStorage.getItem('vent_final_v13') || '{}');
         orders = data.orders || {};
         logs = data.logs || [];
         render();
@@ -238,16 +258,21 @@
             div.innerHTML = `<span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="removeOrder('${k}')">×</button>`;
             oCont.appendChild(div);
         }
-        const lCont = document.getElementById('logList');
-        lCont.innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.75rem;">${l}</span></div>`).join('');
+        document.getElementById('logList').innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.75rem;">${l}</span></div>`).join('');
     }
 
     function removeOrder(key) { delete orders[key]; save(); }
     function clearOrders() { if(confirm("Tömma listan?")) { orders = {}; save(); } }
 
+    function flashButton(id) {
+        const b = document.getElementById(id);
+        b.classList.add('btn-success-flash');
+        setTimeout(() => b.classList.remove('btn-success-flash'), 500);
+    }
+
     function copyOrder() {
         let tag = document.getElementById('projectTag').value;
-        let t = tag ? `PROJEKT/MÄRKNING: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
+        let t = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
         for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
         navigator.clipboard.writeText(t).then(() => {
             flashButton('copyBtn');
