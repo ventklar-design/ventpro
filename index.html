@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Pro - Klar Edition</title>
+    <title>VentPro Pro - Ultimate Edition</title>
     <style>
         :root { 
             --accent: #fbc531; --primary: #4a90e2; --bg: #0d0d0d; 
@@ -15,13 +15,13 @@
         .display-area { 
             background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 1px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            padding: 10px; text-align: center;
+            border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            padding: 10px; text-align: center; position: relative; transition: border 0.3s;
         }
 
-        .res-label { font-size: 0.55rem; color: var(--accent); letter-spacing: 2px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
+        .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
         .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 8px; }
-        .res-extra { font-size: 1rem; color: #fbc531; font-weight: bold; margin-bottom: 4px; }
+        .res-extra { font-size: 1rem; color: var(--accent); font-weight: bold; margin-bottom: 4px; }
         .res-sub { font-size: 0.75rem; color: #666; font-weight: bold; }
 
         .tab-row { display: flex; gap: 8px; margin-bottom: 15px; }
@@ -61,8 +61,8 @@
 <body onload="loadData()">
 
 <div class="card">
-    <div class="display-area">
-        <div class="res-label">Kapmått L (Mellan sick)</div>
+    <div class="display-area" id="displayBox">
+        <div class="res-label" id="warningLabel">Kapmått L (Mellan sick)</div>
         <div class="res-main" id="valL">0 mm</div>
         <div class="res-extra" id="valBuild">Byggmått: 0 mm</div>
         <div class="res-sub" id="valCC">C-C: 0 mm</div>
@@ -81,8 +81,8 @@
                 <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
             </select>
         </div>
-        <div class="field" id="u-box" style="display:none;"><label>U-Mått</label><input type="number" id="u" placeholder="mm" oninput="ar();calc()"></div>
-        <div class="field" id="r-box" style="display:none;"><label>Radie</label><input type="number" id="r" placeholder="mm" oninput="calc()"></div>
+        <div class="field" id="u-box" style="display:none;"><label>U-Mått (Bredd)</label><input type="number" id="u" placeholder="mm" oninput="ar();calc()"></div>
+        <div class="field" id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" placeholder="mm" oninput="calc()"></div>
         <div class="field"><label>Vinkel 1</label>
             <select id="v1" onchange="calc()">
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
@@ -95,9 +95,9 @@
         </div>
         <div class="field"><label>S-Mått Sido</label><input type="number" id="s" placeholder="mm" oninput="calc()"></div>
         <div class="field"><label>S-Mått Höjd</label><input type="number" id="h" placeholder="mm" oninput="calc()"></div>
-        <div class="field"><label>Finjustera (+/- mm)</label><input type="number" id="adj" value="0" oninput="calc()"></div>
+        <div class="field" style="grid-column: span 2;"><label>Finjustera (+/- mm)</label><input type="number" id="adj" value="0" oninput="calc()"></div>
     </div>
-    <button class="calc-btn" id="saveBtn" onclick="logCalculation()">Spara i Historik</button>
+    <button class="calc-btn" id="saveBtn" onclick="logCalculation()">Beräkna & Spara Historik</button>
     <button class="clear-link" onclick="resetInputs()">Nollställ rutor</button>
 </div>
 
@@ -134,25 +134,79 @@
 
 <script>
     let mode = 'rund', orders = {}, logs = [];
-    function setMode(t) { mode = t; document.getElementById('d-box').style.display = t==='rund'?'block':'none'; document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; document.getElementById('r-box').style.display = t==='rekt'?'block':'none'; document.getElementById('tr').classList.toggle('active', t==='rund'); document.getElementById('tk').classList.toggle('active', t==='rekt'); calc(); }
-    function ar() { const u=parseFloat(document.getElementById('u').value); if(u)document.getElementById('r').value=100+(u/2); }
-    function resetInputs() { document.getElementById('s').value = ''; document.getElementById('h').value = ''; document.getElementById('adj').value = '0'; resetDisplay(); }
+    
+    function setMode(t) { 
+        mode = t; 
+        document.getElementById('d-box').style.display = t==='rund'?'block':'none'; 
+        document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; 
+        document.getElementById('r-box').style.display = t==='rekt'?'block':'none'; 
+        document.getElementById('tr').classList.toggle('active', t==='rund'); 
+        document.getElementById('tk').classList.toggle('active', t==='rekt'); 
+        calc(); 
+    }
+    
+    function ar() { 
+        const u=parseFloat(document.getElementById('u').value); 
+        if(u) document.getElementById('r').value = 100 + (u/2); 
+    }
+    
+    function resetInputs() { 
+        document.getElementById('s').value = ''; 
+        document.getElementById('h').value = ''; 
+        document.getElementById('u').value = ''; 
+        document.getElementById('r').value = ''; 
+        document.getElementById('adj').value = '0'; 
+        resetDisplay(); 
+    }
+    
     function calc() {
-        const d = document.getElementById('d').value, v1 = parseFloat(document.getElementById('v1').value), v2 = parseFloat(document.getElementById('v2').value);
+        const d = parseFloat(document.getElementById('d').value), v1 = parseFloat(document.getElementById('v1').value), v2 = parseFloat(document.getElementById('v2').value);
         const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, adj = parseFloat(document.getElementById('adj').value)||0;
+        const displayBox = document.getElementById('displayBox');
+        const warningLabel = document.getElementById('warningLabel');
+        
         if(s === 0 && h === 0) { resetDisplay(); return; }
+        
         let a1, a2;
-        if(mode === 'rund') { a1 = Math.tan((v1/2)*(Math.PI/180)) * d; a2 = Math.tan((v2/2)*(Math.PI/180)) * d; } 
-        else { const r = parseFloat(document.getElementById('r').value)||0; a1 = r * Math.tan((v1/2)*(Math.PI/180)); a2 = r * Math.tan((v2/2)*(Math.PI/180)); }
+        if(mode === 'rund') { 
+            a1 = Math.tan((v1/2)*(Math.PI/180)) * d; 
+            a2 = Math.tan((v2/2)*(Math.PI/180)) * d; 
+        } else { 
+            const r = parseFloat(document.getElementById('r').value)||0; 
+            a1 = r * Math.tan((v1/2)*(Math.PI/180)); 
+            a2 = r * Math.tan((v2/2)*(Math.PI/180)); 
+        }
+        
         const offset = Math.sqrt(s*s + h*h), avgV = (v1 + v2) / 2;
         const cc = offset / Math.sin(avgV * (Math.PI/180));
-        const l = Math.max(0, Math.round(cc - (a1 + a2) + adj));
+        const rawL = cc - (a1 + a2);
+        const l = Math.max(0, Math.round(rawL + adj));
         const bygg = Math.round(offset / Math.tan(avgV * (Math.PI/180)) + a1 + a2);
+
+        if (rawL < 0) {
+            displayBox.style.borderColor = "var(--danger)";
+            warningLabel.innerText = "FÖR KORT AVSTÅND!";
+            warningLabel.style.color = "var(--danger)";
+        } else {
+            displayBox.style.borderColor = "#444";
+            warningLabel.innerText = "Kapmått L (Mellan sick)";
+            warningLabel.style.color = "var(--accent)";
+        }
+
         document.getElementById('valL').innerText = l + " mm";
         document.getElementById('valBuild').innerText = "Byggmått: " + bygg + " mm";
         document.getElementById('valCC').innerText = "C-C: " + Math.round(cc) + " mm";
     }
-    function resetDisplay() { document.getElementById('valL').innerText = "0 mm"; document.getElementById('valBuild').innerText = "Byggmått: 0 mm"; document.getElementById('valCC').innerText = "C-C: 0 mm"; }
+
+    function resetDisplay() { 
+        document.getElementById('valL').innerText = "0 mm"; 
+        document.getElementById('valBuild').innerText = "Byggmått: 0 mm"; 
+        document.getElementById('valCC').innerText = "C-C: 0 mm"; 
+        document.getElementById('displayBox').style.borderColor = "#444";
+        document.getElementById('warningLabel').innerText = "Kapmått L (Mellan sick)";
+        document.getElementById('warningLabel').style.color = "var(--accent)";
+    }
+
     function logCalculation() {
         const l = document.getElementById('valL').innerText; if(l === "0 mm") return;
         const s = document.getElementById('s').value || 0, h = document.getElementById('h').value || 0;
@@ -160,15 +214,18 @@
         logs.unshift(`${v1}°/${v2}° | S:${s} H:${h} ➔ L:${l}`); if(logs.length > 5) logs.pop();
         flashButton('saveBtn'); save();
     }
+
     function addQuick(name) {
-        let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt";
+        let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt " + (document.getElementById('u').value || "");
         let noDim = ['SCHAKT-S', 'Skruv', 'Hålband', 'Silikon'];
         let key = noDim.includes(name) ? name : `${dim} ${name}`;
         orders[key] = (orders[key] || 0) + 1; save();
     }
+
     function flashButton(id) { const b = document.getElementById(id); b.classList.add('btn-success-flash'); setTimeout(() => b.classList.remove('btn-success-flash'), 500); }
-    function save() { localStorage.setItem('vent_final_v12_complete', JSON.stringify({orders, logs})); render(); }
-    function loadData() { const data = JSON.parse(localStorage.getItem('vent_final_v12_complete') || '{}'); orders = data.orders || {}; logs = data.logs || []; render(); }
+    function save() { localStorage.setItem('vent_final_v14', JSON.stringify({orders, logs})); render(); }
+    function loadData() { const data = JSON.parse(localStorage.getItem('vent_final_v14') || '{}'); orders = data.orders || {}; logs = data.logs || []; render(); }
+    
     function render() {
         const oCont = document.getElementById('orderList'); oCont.innerHTML = '';
         for (const [k, q] of Object.entries(orders)) {
@@ -176,16 +233,16 @@
             div.innerHTML = `<span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="removeOrder('${k}')">×</button>`;
             oCont.appendChild(div);
         }
-        const lCont = document.getElementById('logList');
-        lCont.innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.75rem;">${l}</span></div>`).join('');
+        document.getElementById('logList').innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.75rem;">${l}</span></div>`).join('');
     }
+
     function removeOrder(key) { delete orders[key]; save(); }
     function clearOrders() { if(confirm("Tömma listan?")) { orders = {}; save(); } }
     function copyOrder() {
         let tag = document.getElementById('projectTag').value;
         let t = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
         for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
-        navigator.clipboard.writeText(t).then(() => { flashButton('copyBtn'); alert("Kopierad till urklipp!"); });
+        navigator.clipboard.writeText(t).then(() => { flashButton('copyBtn'); alert("Kopierad! Klistra in i SMS."); });
     }
 </script>
 </body>
