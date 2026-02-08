@@ -9,8 +9,10 @@
             --accent: #fbc531; --primary: #4a90e2; --bg: #0d0d0d; 
             --card: #181818; --input: #252525; --success: #2ecc71; --danger: #e74c3c;
         }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; touch-action: manipulation; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; box-sizing: border-box; }
+        
+        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; }
         
         .display-area { 
             background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; 
@@ -42,17 +44,18 @@
         .plus-btn { background: #1a1a1a; border: 1px solid #333; color: #ddd; padding: 10px 4px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; white-space: nowrap; overflow: hidden; }
         .plus-btn:active { transform: scale(0.95); background: #333; }
         
+        /* Färgkodning enligt din bild */
         .btn-bend { border-color: #9b59b6; color: #9b59b6; }
         .btn-tube { border-color: #2ecc71; color: #2ecc71; }
-        .btn-supp { border-color: #e67e22; color: #e67e22; }
         .btn-fix { border-color: #4a90e2; color: #4a90e2; }
+        .btn-supp { border-color: #e67e22; color: #e67e22; }
 
         .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 10px; }
         .list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 0.85rem; }
         .qty { background: var(--accent); color: #000; font-weight: bold; padding: 4px 10px; border-radius: 4px; margin-right: 12px; min-width: 25px; text-align: center; cursor: pointer; }
         .del-btn { color: var(--danger); background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 0 10px; margin-left: auto; }
         
-        .calc-btn { width: 100%; padding: 16px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
         .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-success-flash { background: var(--success) !important; color: white !important; }
         .clear-link { display: block; width: 100%; background: none; color: #555; border: none; margin-top: 12px; font-size: 0.7rem; cursor: pointer; text-decoration: underline; text-align: center; }
@@ -81,9 +84,9 @@
                 <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
             </select>
         </div>
-        <div class="field" id="u-box" style="display:none;"><label>Bredd (U-mått)</label><input type="number" id="u" placeholder="mm" oninput="ar();calc()"></div>
-        <div class="field" id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" placeholder="mm" oninput="calc()"></div>
-        <div class="field"><label>Finjustera (+/-)</label><input type="number" id="adj" value="0" oninput="calc()"></div>
+        <div class="field" id="u-box" style="display:none;"><label>Bredd (U-mått)</label><input type="number" id="u" inputmode="decimal" placeholder="mm" oninput="ar();calc()"></div>
+        <div class="field" id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
+        <div class="field"><label>Finjustera (+/-)</label><input type="number" id="adj" inputmode="decimal" value="0" oninput="calc()"></div>
         <div class="field"><label>Vinkel 1</label>
             <select id="v1" onchange="calc()">
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
@@ -94,8 +97,8 @@
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div class="field"><label>S-Mått Sido</label><input type="number" id="s" placeholder="mm" oninput="calc()"></div>
-        <div class="field"><label>S-Mått Höjd</label><input type="number" id="h" placeholder="mm" oninput="calc()"></div>
+        <div class="field"><label>S-Mått Sido</label><input type="number" id="s" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
+        <div class="field"><label>S-Mått Höjd</label><input type="number" id="h" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
     </div>
     <button class="calc-btn" id="saveBtn" onclick="logCalculation()">Beräkna & Spara Historik</button>
     <button class="clear-link" onclick="resetInputs()">Nollställ rutor</button>
@@ -162,8 +165,6 @@
     function calc() {
         const d = parseFloat(document.getElementById('d').value), v1 = parseFloat(document.getElementById('v1').value), v2 = parseFloat(document.getElementById('v2').value);
         const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, adj = parseFloat(document.getElementById('adj').value)||0;
-        const displayBox = document.getElementById('displayBox');
-        const warningLabel = document.getElementById('warningLabel');
         
         if(s === 0 && h === 0) { resetDisplay(); return; }
         
@@ -182,6 +183,9 @@
         const rawL = cc - (a1 + a2);
         const l = Math.max(0, Math.round(rawL + adj));
         const bygg = Math.round(offset / Math.tan(avgV * (Math.PI/180)) + a1 + a2);
+
+        const displayBox = document.getElementById('displayBox');
+        const warningLabel = document.getElementById('warningLabel');
 
         if (rawL < 0) {
             displayBox.style.borderColor = "var(--danger)";
@@ -211,15 +215,14 @@
         const l = document.getElementById('valL').innerText; if(l === "0 mm") return;
         const tag = document.getElementById('projectTag').value || "Mått";
         const s = document.getElementById('s').value || 0, h = document.getElementById('h').value || 0;
-        const v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
-        logs.unshift(`[${tag.toUpperCase()}] ${v1}°/${v2}° L:${l} (S:${s} H:${h})`); 
+        logs.unshift(`[${tag.toUpperCase()}] L:${l} (S:${s} H:${h})`); 
         if(logs.length > 5) logs.pop();
         flashButton('saveBtn'); save();
     }
 
     function addQuick(name) {
         let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt " + (document.getElementById('u').value || "");
-        let noDim = ['SCHAKT-S', 'Tejp', 'Silikon', 'Mont-skruv', 'Hålband', 'Gängstång', 'Slagankare', 'Takfäste', 'Lamellmatta'];
+        let noDim = ['SCHAKT-S', 'Tejp', 'Silikon', 'Mont-skruv', 'Hålband', 'Gängstång', 'Slagankare', 'Lamellmatta'];
         let key = noDim.includes(name) ? name : `${dim} ${name}`;
         orders[key] = (orders[key] || 0) + 1; save();
     }
