@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Elite - GitHub Final</title>
+    <title>VentPro Elite - Final Release</title>
     <style>
         :root { 
             --accent: #fbc531; --primary: #4a90e2; --bg: #0d0d0d; 
@@ -42,10 +42,10 @@
         .plus-btn { background: #1a1a1a; border: 1px solid #333; color: #ddd; padding: 10px 4px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; white-space: nowrap; overflow: hidden; }
         .plus-btn:active { transform: scale(0.95); background: #333; }
         
-        .btn-special { border-color: var(--primary); color: var(--primary); }
         .btn-bend { border-color: #9b59b6; color: #9b59b6; }
         .btn-tube { border-color: #2ecc71; color: #2ecc71; }
         .btn-supp { border-color: #e67e22; color: #e67e22; }
+        .btn-fix { border-color: #4a90e2; color: #4a90e2; }
 
         .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 10px; }
         .list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 0.85rem; }
@@ -106,21 +106,26 @@
     <input type="text" id="projectTag" placeholder="Märkning (t.ex. Plan/Rum)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px; font-size:0.8rem;">
     
     <div class="quick-grid">
-        <button class="plus-btn btn-special" onclick="addQuick('SCHAKT-S')">SCHAKT-S</button>
         <button class="plus-btn btn-bend" onclick="addQuick('90° Böj')">90° Böj</button>
         <button class="plus-btn btn-bend" onclick="addQuick('45° Böj')">45° Böj</button>
+        <button class="plus-btn btn-bend" onclick="addQuick('30° Böj')">30° Böj</button>
+        <button class="plus-btn btn-bend" onclick="addQuick('15° Böj')">15° Böj</button>
         <button class="plus-btn btn-tube" onclick="addQuick('Rör 3m')">Rör 3m</button>
-        <button class="plus-btn btn-tube" onclick="addQuick('Iris-spjäll')">Iris</button>
         <button class="plus-btn btn-tube" onclick="addQuick('T-Rör')">T-Rör</button>
-        <button class="plus-btn" onclick="addQuick('Muff')">Muff</button>
+        <button class="plus-btn btn-tube" onclick="addQuick('Sadel')">Sadel</button>
+        <button class="plus-btn btn-tube" onclick="addQuick('Iris-spjäll')">Iris</button>
         <button class="plus-btn" onclick="addQuick('Nippel')">Nippel</button>
+        <button class="plus-btn" onclick="addQuick('Muff')">Muff</button>
+        <button class="plus-btn" onclick="addQuick('E-Muff')">E-Muff</button>
         <button class="plus-btn" onclick="addQuick('Gavel')">Gavel</button>
-        <button class="plus-btn btn-supp" onclick="addQuick('Skruv')">Skruv</button>
-        <button class="plus-btn btn-supp" onclick="addQuick('Hålband')">Hålband</button>
+        <button class="plus-btn btn-fix" onclick="addQuick('Hålband')">Hålband</button>
+        <button class="plus-btn btn-fix" onclick="addQuick('Gängstång')">Gängstång</button>
+        <button class="plus-btn btn-fix" onclick="addQuick('Slagankare')">Slagankare</button>
+        <button class="plus-btn btn-fix" onclick="addQuick('Mont-skruv')">Skruv</button>
         <button class="plus-btn btn-supp" onclick="addQuick('Tejp')">Tejp</button>
-        <button class="plus-btn btn-supp" onclick="addQuick('Gängstång')">Gängstång</button>
-        <button class="plus-btn btn-supp" onclick="addQuick('Slagankare')">Slagankare</button>
         <button class="plus-btn btn-supp" onclick="addQuick('Silikon')">Silikon</button>
+        <button class="plus-btn btn-supp" onclick="addQuick('Lamellmatta')">Isolering</button>
+        <button class="plus-btn btn-supp" onclick="addQuick('SCHAKT-S')">SCHAKT-S</button>
     </div>
     <div id="orderList" class="list-container"></div>
     <button class="copy-btn" id="copyBtn" onclick="copyOrder()">Kopiera till SMS</button>
@@ -149,10 +154,7 @@
     }
     
     function resetInputs() { 
-        document.getElementById('s').value = ''; 
-        document.getElementById('h').value = ''; 
-        document.getElementById('u').value = ''; 
-        document.getElementById('r').value = ''; 
+        ['s','h','u','r'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('adj').value = '0'; 
         resetDisplay(); 
     }
@@ -202,6 +204,7 @@
         document.getElementById('valCC').innerText = "C-C: 0 mm"; 
         document.getElementById('displayBox').style.borderColor = "#444";
         document.getElementById('warningLabel').innerText = "Kapmått L (Mellan sick)";
+        document.getElementById('warningLabel').style.color = "var(--accent)";
     }
 
     function logCalculation() {
@@ -216,13 +219,13 @@
 
     function addQuick(name) {
         let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt " + (document.getElementById('u').value || "");
-        let noDim = ['SCHAKT-S', 'Skruv', 'Hålband', 'Silikon', 'Tejp', 'Gängstång', 'Slagankare'];
+        let noDim = ['SCHAKT-S', 'Tejp', 'Silikon', 'Mont-skruv', 'Hålband', 'Gängstång', 'Slagankare', 'Takfäste', 'Lamellmatta'];
         let key = noDim.includes(name) ? name : `${dim} ${name}`;
         orders[key] = (orders[key] || 0) + 1; save();
     }
 
     function updateQty(key) {
-        let newQty = prompt(`Ändra antal för ${key}:`, orders[key]);
+        let newQty = prompt(`Antal för ${key}:`, orders[key]);
         if (newQty !== null && !isNaN(newQty) && newQty !== "") {
             orders[key] = parseInt(newQty);
             if (orders[key] <= 0) delete orders[key];
@@ -231,8 +234,8 @@
     }
 
     function flashButton(id) { const b = document.getElementById(id); b.classList.add('btn-success-flash'); setTimeout(() => b.classList.remove('btn-success-flash'), 500); }
-    function save() { localStorage.setItem('vent_final_v16', JSON.stringify({orders, logs})); render(); }
-    function loadData() { const data = JSON.parse(localStorage.getItem('vent_final_v16') || '{}'); orders = data.orders || {}; logs = data.logs || []; render(); }
+    function save() { localStorage.setItem('vent_final_v20', JSON.stringify({orders, logs})); render(); }
+    function loadData() { const data = JSON.parse(localStorage.getItem('vent_final_v20') || '{}'); orders = data.orders || {}; logs = data.logs || []; render(); }
     
     function render() {
         const oCont = document.getElementById('orderList'); oCont.innerHTML = '';
