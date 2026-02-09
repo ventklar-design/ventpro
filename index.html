@@ -12,12 +12,12 @@
         }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; touch-action: manipulation; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; }
-        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; }
+        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; transform: translateZ(0); }
+        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; transition: border-color 0.2s; }
         .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
         .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 8px; }
         .res-extra { font-size: 0.9rem; color: var(--accent); font-weight: bold; }
-        
+
         .tab-row { display: flex; gap: 8px; margin-bottom: 12px; }
         .tab-btn { flex: 1; padding: 10px; border: 1px solid #333; border-radius: 8px; background: transparent; color: #555; font-weight: 800; text-transform: uppercase; font-size: 0.65rem; cursor: pointer; }
         .tab-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(251, 197, 49, 0.1); }
@@ -27,17 +27,21 @@
         label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
         input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; width: 100%; outline: none; }
         
+        /* Logik för inaktiva fält */
+        .type-select-container { transition: opacity 0.3s; }
+        .type-disabled { opacity: 0.3; pointer-events: none; }
+
         .order-section { width: 100%; max-width: 480px; background: #121212; border-radius: 16px; border: 1px solid #222; padding: 15px; margin-bottom: 20px; }
         .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .plus-btn { border: none; color: #fff; padding: 10px 2px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-b { background: var(--btn-bend); } .btn-r { background: var(--btn-pipe); } .btn-p { background: var(--btn-part); } .btn-o { background: var(--btn-other); }
-        
+
         .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 15px; }
         .list-item { display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #222; font-size: 0.8rem; }
         .qty { background: var(--accent); color: #000; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-right: 10px; }
         .del-btn { color: var(--danger); background: none; border: none; font-size: 1.2rem; margin-left: auto; cursor: pointer; }
-        .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; margin-top: 10px; }
-        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; text-transform: uppercase; }
+        .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
+        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
     </style>
 </head>
 <body onload="loadData()">
@@ -48,7 +52,7 @@
         <button id="brandH" class="tab-btn" onclick="setBrand('hallstrom')">HALLSTRÖM</button>
     </div>
 
-    <div class="display-area">
+    <div class="display-area" id="mainDisplay">
         <div class="res-label">Kapmått L (Mellan sickar)</div>
         <div class="res-main" id="valL">0 mm</div>
         <div class="res-extra" id="valBuild">Byggmått: 0 mm</div>
@@ -70,24 +74,24 @@
         <div id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" oninput="ar();calc()"></div>
         <div id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" oninput="calc()"></div>
         <div><label>Justera (+/-)</label><input type="number" id="adj" value="0" oninput="calc()"></div>
-        
+
         <div><label>Vinkel 1</label>
-            <select id="v1" onchange="calc()">
+            <select id="v1" onchange="updateTypeVisibility();calc()">
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div><label id="lblT1">Typ 1 (BU)</label>
+        <div id="t1-container" class="type-select-container"><label id="lblT1">Typ 1 (BU)</label>
             <select id="t1" onchange="calc()">
                 <option value="normal">Normal</option><option value="kort">Kort</option>
             </select>
         </div>
 
         <div><label>Vinkel 2</label>
-            <select id="v2" onchange="calc()">
+            <select id="v2" onchange="updateTypeVisibility();calc()">
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div><label id="lblT2">Typ 2 (BU)</label>
+        <div id="t2-container" class="type-select-container"><label id="lblT2">Typ 2 (BU)</label>
             <select id="t2" onchange="calc()">
                 <option value="normal">Normal</option><option value="kort">Kort</option>
             </select>
@@ -102,13 +106,13 @@
 <div class="order-section">
     <div class="res-label" style="text-align: center; margin-bottom: 10px;">Beställningslista</div>
     <input type="text" id="tag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px;">
-    
+
     <div class="quick-grid">
         <button class="plus-btn btn-b" onclick="add('90° Böj')">90° B</button>
         <button class="plus-btn btn-b" onclick="add('45° Böj')">45° B</button>
         <button class="plus-btn btn-b" onclick="add('30° Böj')">30° B</button>
         <button class="plus-btn btn-b" onclick="add('15° Böj')">15° B</button>
-        
+
         <button class="plus-btn btn-r" onclick="add('Rör 3m')">Rör 3m</button>
         <button class="plus-btn btn-r" onclick="add('T-Rör')">T-Rör</button>
         <button class="plus-btn btn-r" onclick="add('Gängstång M8')">M8 Gäng</button>
@@ -143,18 +147,108 @@
             kort: { 100:{90:60}, 125:{90:73}, 160:{90:95}, 200:{90:112}, 250:{90:160}, 315:{90:195}, 400:{90:240}, 500:{90:314}, 630:{90:385} }
         }
     };
-    function setBrand(b) { brand = b; document.getElementById('brandL').classList.toggle('brand-active', b === 'lindab'); document.getElementById('brandH').classList.toggle('brand-active', b === 'hallstrom'); document.getElementById('lblT1').innerText = `Typ 1 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; document.getElementById('lblT2').innerText = `Typ 2 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; calc(); }
-    function setMode(t) { mode = t; document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; document.getElementById('tr').classList.toggle('active', t==='rund'); calc(); }
-    function ar() { const u = parseFloat(document.getElementById('u').value); if(u) document.getElementById('r').value = 100 + (u/2); }
-    function getA(v, type, d) { v = parseInt(v); if(mode === 'rekt') return (parseFloat(document.getElementById('r').value) || 0) * Math.tan((v/2)*(Math.PI/180)); if(type === 'kort' && v !== 90) return Math.round((parseInt(d) * 0.6) * Math.tan((v/2)*(Math.PI/180))); return db[brand][type][d]?.[v] || Math.round(d * Math.tan((v/2)*(Math.PI/180))); }
-    function calc() { const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value, s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, a1 = getA(v1, document.getElementById('t1').value, d), a2 = getA(v2, document.getElementById('t2').value, d), off = Math.sqrt(s*s + h*h), rad = ((parseInt(v1)+parseInt(v2))/2)*(Math.PI/180), l = Math.max(0, Math.round((off/Math.sin(rad)) - (a1+a2) + (parseFloat(document.getElementById('adj').value)||0))); document.getElementById('valL').innerText = l + " mm"; document.getElementById('valBuild').innerText = "Byggmått: " + Math.round(off/Math.tan(rad) + a1 + a2) + " mm"; }
-    function add(n) { let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; orders[k] = (orders[k]||0)+1; save(); }
-    function log() { const l = document.getElementById('valL').innerText; if(l!=="0 mm") { logs.unshift(`[${brand.toUpperCase()}] L:${l}`); if(logs.length>5) logs.pop(); save(); } }
+
+    function updateTypeVisibility() {
+        const v1 = document.getElementById('v1').value;
+        const v2 = document.getElementById('v2').value;
+        const t1c = document.getElementById('t1-container');
+        const t2c = document.getElementById('t2-container');
+        
+        // Sätt till normal om vinkeln ändras från 90
+        if(v1 !== "90") document.getElementById('t1').value = "normal";
+        if(v2 !== "90") document.getElementById('t2').value = "normal";
+
+        t1c.className = v1 === "90" ? "type-select-container" : "type-select-container type-disabled";
+        t2c.className = v2 === "90" ? "type-select-container" : "type-select-container type-disabled";
+    }
+
+    function setBrand(b) { 
+        brand = b; 
+        document.getElementById('brandL').classList.toggle('brand-active', b === 'lindab'); 
+        document.getElementById('brandH').classList.toggle('brand-active', b === 'hallstrom'); 
+        document.getElementById('lblT1').innerText = `Typ 1 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; 
+        document.getElementById('lblT2').innerText = `Typ 2 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; 
+        calc(); 
+    }
+
+    function setMode(t) { 
+        mode = t; 
+        document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; 
+        document.getElementById('r-box').style.display = t==='rekt'?'block':'none';
+        document.getElementById('tr').classList.toggle('active', t==='rund'); 
+        document.getElementById('tk').classList.toggle('active', t==='rekt'); 
+        calc(); 
+    }
+
+    function ar() { 
+        const u = parseFloat(document.getElementById('u').value); 
+        if(u) document.getElementById('r').value = 100 + (u/2); 
+    }
+
+    function getA(v, type, d) { 
+        v = parseInt(v); 
+        if(mode === 'rekt') return (parseFloat(document.getElementById('r').value) || 0) * Math.tan((v/2)*(Math.PI/180)); 
+        if(type === 'kort' && v !== 90) return Math.round((parseInt(d) * 0.6) * Math.tan((v/2)*(Math.PI/180))); 
+        return db[brand][type][d]?.[v] || Math.round(d * Math.tan((v/2)*(Math.PI/180))); 
+    }
+
+    function calc() { 
+        const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value, s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, a1 = getA(v1, document.getElementById('t1').value, d), a2 = getA(v2, document.getElementById('t2').value, d), off = Math.sqrt(s*s + h*h), rad = ((parseInt(v1)+parseInt(v2))/2)*(Math.PI/180), l = Math.max(0, Math.round((off/Math.sin(rad)) - (a1+a2) + (parseFloat(document.getElementById('adj').value)||0))); 
+        document.getElementById('valL').innerText = l + " mm"; 
+        document.getElementById('valBuild').innerText = "Byggmått: " + Math.round(off/Math.tan(rad) + a1 + a2) + " mm"; 
+    }
+
+    function add(n) { 
+        let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; 
+        orders[k] = (orders[k]||0)+1; 
+        save(); 
+    }
+
+    function log() { 
+        const l = document.getElementById('valL').innerText; 
+        const display = document.getElementById('mainDisplay');
+        if(l!=="0 mm") { 
+            logs.unshift(`[${brand.toUpperCase()}] L:${l} (${mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt'})`); 
+            if(logs.length>5) logs.pop(); 
+            
+            // Visuell feedback
+            display.style.borderColor = "var(--success)";
+            setTimeout(() => display.style.borderColor = "#444", 400);
+            
+            save(); 
+        } 
+    }
+
     function save() { localStorage.setItem('vent_elite_multi', JSON.stringify({orders, logs, brand})); render(); }
-    function loadData() { const s = JSON.parse(localStorage.getItem('vent_elite_multi')||'{}'); orders = s.orders||{}; logs = s.logs||[]; if(s.brand) setBrand(s.brand); render(); }
-    function render() { const oList = document.getElementById('orderList'); oList.innerHTML = ''; for (const [k, q] of Object.entries(orders)) { const d = document.createElement('div'); d.className = 'list-item'; d.innerHTML = `<span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="remove('${k}')">×</button>`; oList.appendChild(d); } document.getElementById('logList').innerHTML = logs.map(x => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${x}</span></div>`).join(''); }
+    
+    function loadData() { 
+        const s = JSON.parse(localStorage.getItem('vent_elite_multi')||'{}'); 
+        orders = s.orders||{}; 
+        logs = s.logs||[]; 
+        if(s.brand) setBrand(s.brand); 
+        updateTypeVisibility();
+        render(); 
+    }
+
+    function render() { 
+        const oList = document.getElementById('orderList'); 
+        oList.innerHTML = ''; 
+        for (const [k, q] of Object.entries(orders)) { 
+            const d = document.createElement('div'); 
+            d.className = 'list-item'; 
+            d.innerHTML = `<span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="remove('${k}')">×</button>`; 
+            oList.appendChild(d); 
+        } 
+        document.getElementById('logList').innerHTML = logs.map(x => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${x}</span></div>`).join(''); 
+    }
+
     function remove(k) { delete orders[k]; save(); }
-    function copy() { let t = `TILLVERKARE: ${brand.toUpperCase()}\n` + (document.getElementById('tag').value ? `PROJEKT: ${document.getElementById('tag').value.toUpperCase()}\n\n` : "BESTÄLLNING:\n"); for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`; navigator.clipboard.writeText(t).then(() => alert("Kopierat!")); }
+
+    function copy() { 
+        let t = `TILLVERKARE: ${brand.toUpperCase()}\n` + (document.getElementById('tag').value ? `PROJEKT: ${document.getElementById('tag').value.toUpperCase()}\n\n` : "BESTÄLLNING:\n"); 
+        for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`; 
+        navigator.clipboard.writeText(t).then(() => alert("Kopierat!")); 
+    }
 </script>
 </body>
 </html>
