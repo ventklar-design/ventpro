@@ -3,270 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Elite - Klar Final Edition</title>
+    <title>VentPro Elite - Klar Hallströms Edition</title>
     <style>
-        :root { 
-            --accent: #fbc531; --primary: #4a90e2; --bg: #0d0d0d; 
-            --card: #181818; --input: #252525; --success: #2ecc71; --danger: #e74c3c;
-        }
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; touch-action: manipulation; }
+        :root { --accent: #fbc531; --bg: #0d0d0d; --card: #181818; --input: #252525; --success: #2ecc71; --danger: #e74c3c; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-
-        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; }
-
-        .display-area { 
-            background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            padding: 10px; text-align: center; position: relative; transition: border 0.3s;
-        }
-
-        .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
-        .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 8px; }
-        .res-extra { font-size: 0.9rem; color: var(--accent); font-weight: bold; margin-bottom: 4px; }
-        .res-sub { font-size: 0.75rem; color: #666; font-weight: bold; }
-
-        .tab-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px; border: 1px solid #333; border-radius: 8px; background: transparent; color: #555; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; cursor: pointer; }
-        .tab-btn.active { border-color: var(--accent); color: var(--accent); box-shadow: inset 0 0 10px rgba(251, 197, 49, 0.1); }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; border: 1px solid #333; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        .display-area { background: #000; border-radius: 12px; min-height: 130px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; text-align: center; padding: 10px; }
+        .res-label { font-size: 0.65rem; color: var(--accent); letter-spacing: 1px; font-weight: bold; text-transform: uppercase; }
+        .res-main { font-size: 3.2rem; font-weight: 900; margin: 5px 0; color: #fff; }
+        .res-sub { font-size: 0.8rem; color: #666; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .field { display: flex; flex-direction: column; }
-        label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; padding-left: 2px; }
-
-        input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; width: 100%; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--primary); }
-
-        .order-section { width: 100%; max-width: 480px; background: #121212; border-radius: 16px; border: 1px solid #222; padding: 15px; box-sizing: border-box; margin-bottom: 20px; }
-        .section-title { font-size: 0.75rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; font-weight: bold; text-align: center; }
-
-        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
-        .plus-btn { background: #1a1a1a; border: 1px solid #333; color: #ddd; padding: 10px 4px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; white-space: nowrap; overflow: hidden; }
-        .plus-btn:active { transform: scale(0.95); background: #333; }
-
-        .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 10px; }
-        .list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 0.85rem; }
-        .qty { background: var(--accent); color: #000; font-weight: bold; padding: 4px 10px; border-radius: 4px; margin-right: 12px; min-width: 25px; text-align: center; cursor: pointer; }
-        .del-btn { color: var(--danger); background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 0 10px; margin-left: auto; }
-
-        .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-success-flash { background: #fff !important; color: #000 !important; }
-        .clear-link { display: block; width: 100%; background: none; color: #555; border: none; margin-top: 12px; font-size: 0.7rem; cursor: pointer; text-decoration: underline; text-align: center; }
+        label { font-size: 0.6rem; color: #888; text-transform: uppercase; margin-bottom: 4px; font-weight: bold; }
+        input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--accent); }
+        .footer-tag { margin-top: 15px; font-size: 0.6rem; color: #444; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
-<body onload="loadData()">
+<body>
 
 <div class="card">
     <div class="display-area" id="displayBox">
-        <div class="res-label" id="warningLabel">Kapmått L (Mellan sick)</div>
+        <div class="res-label">Kapmått mellan sickar (L)</div>
         <div class="res-main" id="valL">0 mm</div>
-        <div class="res-extra" id="valBuild">Byggmått: 0 mm</div>
         <div class="res-sub" id="valCC">C-C: 0 mm</div>
     </div>
 
-    <div class="tab-row">
-        <button id="tr" class="tab-btn active" onclick="setMode('rund')">RUND</button>
-        <button id="tk" class="tab-btn" onclick="setMode('rekt')">REKT</button>
-    </div>
-
     <div class="grid">
-        <div class="field" id="d-box"><label>Dimension</label>
+        <div class="field"><label>Dimension</label>
             <select id="d" onchange="calc()">
-                <option value="100">Ø100</option><option value="125">Ø125</option><option value="160" selected>Ø160</option>
-                <option value="200">Ø200</option><option value="250">Ø250</option><option value="315">Ø315</option>
-                <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
+                <option value="100">Ø100</option>
+                <option value="125">Ø125</option>
+                <option value="160" selected>Ø160</option>
+                <option value="200">Ø200</option>
+                <option value="250">Ø250</option>
+                <option value="315">Ø315</option>
+                <option value="400">Ø400</option>
+                <option value="500">Ø500</option>
+                <option value="630">Ø630</option>
             </select>
         </div>
-        <div class="field" id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" inputmode="decimal" placeholder="mm" oninput="ar();calc()"></div>
-        <div class="field" id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
-        <div class="field"><label>Finjustera (+/-)</label><input type="number" id="adj" inputmode="decimal" value="0" oninput="calc()"></div>
+        <div class="field"><label>Justera (+/-)</label><input type="number" id="adj" value="0" oninput="calc()"></div>
         
         <div class="field"><label>Vinkel 1</label>
             <select id="v1" onchange="calc()">
-                <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
+                <option value="90">90°</option>
+                <option value="60">60°</option>
+                <option value="45" selected>45°</option>
+                <option value="30">30°</option>
+                <option value="15">15°</option>
             </select>
         </div>
         <div class="field"><label>Typ 1</label>
             <select id="t1" onchange="calc()">
-                <option value="normal">Normal (BS)</option><option value="kort">Kort (BK)</option>
+                <option value="BS">Normal (BS/HV)</option>
+                <option value="BK">Kort (HIBK)</option>
             </select>
         </div>
 
         <div class="field"><label>Vinkel 2</label>
             <select id="v2" onchange="calc()">
-                <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
+                <option value="90">90°</option>
+                <option value="60">60°</option>
+                <option value="45" selected>45°</option>
+                <option value="30">30°</option>
+                <option value="15">15°</option>
             </select>
         </div>
         <div class="field"><label>Typ 2</label>
             <select id="t2" onchange="calc()">
-                <option value="normal">Normal (BS)</option><option value="kort">Kort (BK)</option>
+                <option value="BS">Normal (BS/HV)</option>
+                <option value="BK">Kort (HIBK)</option>
             </select>
         </div>
 
-        <div class="field"><label>S-Mått Sido</label><input type="number" id="s" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
-        <div class="field"><label>S-Mått Höjd</label><input type="number" id="h" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
+        <div class="field"><label>S-mått (Sido)</label><input type="number" id="s" placeholder="mm" oninput="calc()"></div>
+        <div class="field"><label>H-mått (Höjd)</label><input type="number" id="h" placeholder="mm" oninput="calc()"></div>
     </div>
-    <button class="calc-btn" id="saveBtn" onclick="logCalculation()">Beräkna & Spara Historik</button>
-    <button class="clear-link" onclick="resetInputs()">Nollställ rutor</button>
+    <div style="text-align:center" class="footer-tag">Klar Verified | Hallströms Data</div>
 </div>
-
-<div class="order-section">
-    <div class="section-title">Beställningslista</div>
-    <input type="text" id="projectTag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px; font-size:0.8rem;">
-
-    <div class="quick-grid">
-        <button class="plus-btn" onclick="addQuick('90° Böj')">90° B</button>
-        <button class="plus-btn" onclick="addQuick('45° Böj')">45° B</button>
-        <button class="plus-btn" onclick="addQuick('30° Böj')">30° B</button>
-        <button class="plus-btn" onclick="addQuick('15° Böj')">15° B</button>
-        <button class="plus-btn" onclick="addQuick('Rör 3m')">Rör</button>
-        <button class="plus-btn" onclick="addQuick('T-Rör')">T-Rör</button>
-        <button class="plus-btn" onclick="addQuick('Iris')">Iris</button>
-        <button class="plus-btn" onclick="addQuick('Muff')">Muff</button>
-        <button class="plus-btn" onclick="addQuick('Nippel')">Nip</button>
-        <button class="plus-btn" onclick="addQuick('Gavel')">Gavel</button>
-        <button class="plus-btn" onclick="addQuick('Tejp')">Tejp</button>
-        <button class="plus-btn" onclick="addQuick('Skruv')">Skruv</button>
-    </div>
-    <div id="orderList" class="list-container"></div>
-    <button class="copy-btn" id="copyBtn" onclick="copyOrder()">Kopiera till SMS</button>
-    <button class="clear-link" onclick="clearOrders()">Töm listan</button>
-</div>
-
-<div class="section-title" style="color:#444;">Historik (Senaste 5)</div>
-<div id="logList" class="list-container" style="width:100%; max-width:480px; margin-bottom: 40px;"></div>
 
 <script>
-    let mode = 'rund', orders = {}, logs = [];
-    
-    // Komplett tabell inkluderat beräknade mått för stora dimensioner
-    const hallstromBK = {
-        100: { 90: 62, 45: 26, 30: 17, 15: 8 },
-        125: { 90: 78, 45: 32, 30: 21, 15: 10 },
-        160: { 90: 92, 45: 38, 30: 25, 15: 12 },
-        200: { 90: 112, 45: 46, 30: 30, 15: 15 },
-        250: { 90: 130, 45: 54, 30: 35, 15: 17 },
-        315: { 90: 155, 45: 64, 30: 42, 15: 20 },
-        400: { 90: 240, 45: 99, 30: 64, 15: 32 },
-        500: { 90: 300, 45: 124, 30: 80, 15: 39 },
-        630: { 90: 378, 45: 156, 30: 101, 15: 50 }
+    // VERIFIERAD DATA FRÅN HALLSTRÖMS PRODUKTBLAD
+    const hallstromData = {
+        BK: { // Kortböj HIBK (Bild 1)
+            100: {90:60, r:60}, 125: {90:73, r:73}, 160: {90:95, r:95}, 200: {90:112, r:120},
+            250: {90:160, r:150}, 315: {90:195, r:190}, 400: {90:240, r:240}, 500: {90:314, r:300}, 630: {90:385, r:378}
+        },
+        BS: { // Normalböj HV (Bild 2-7)
+            100: {90:100, 60:58, 45:41, 30:27, 15:13},
+            125: {90:125, 60:72, 45:52, 30:33, 15:16},
+            160: {90:160, 60:92, 45:66, 30:43, 15:21},
+            200: {90:200, 60:115, 45:83, 30:54, 15:26},
+            250: {90:250, 60:144, 45:104, 30:67, 15:33},
+            315: {90:315, 60:182, 45:130, 30:84, 15:41},
+            400: {90:400, 60:231, 45:166, 30:107, 15:53},
+            500: {90:500, 60:289, 45:207, 30:134, 15:66},
+            630: {90:630, 60:364, 45:261, 30:169, 15:83}
+        }
     };
 
-    function setMode(t) { 
-        mode = t; 
-        document.getElementById('d-box').style.display = t==='rund'?'block':'none'; 
-        document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; 
-        document.getElementById('r-box').style.display = t==='rekt'?'block':'none'; 
-        document.getElementById('tr').classList.toggle('active', t==='rund'); 
-        document.getElementById('tk').classList.toggle('active', t==='rekt'); 
-        calc(); 
-    }
-
-    function ar() { 
-        const u=parseFloat(document.getElementById('u').value); 
-        if(u) document.getElementById('r').value = 100 + (u/2); 
-    }
-
-    function getA(vinkel, typ, dim) {
-        if(mode === 'rekt') return (parseFloat(document.getElementById('r').value)||0) * Math.tan((vinkel/2)*(Math.PI/180));
-        if(typ === 'kort') {
-            if(hallstromBK[dim] && hallstromBK[dim][vinkel]) return hallstromBK[dim][vinkel];
-            return (dim * 0.6) * Math.tan((vinkel/2)*(Math.PI/180));
+    function getBuildMeasure(v, type, d) {
+        v = parseInt(v);
+        const dData = hallstromData[type][d];
+        if (type === 'BS' && dData[v]) return dData[v];
+        if (type === 'BK') {
+            if (v === 90) return dData.90;
+            return Math.round(dData.r * Math.tan((v / 2) * (Math.PI / 180)));
         }
-        return dim * Math.tan((vinkel/2)*(Math.PI/180));
+        return Math.round(d * Math.tan((v / 2) * (Math.PI / 180)));
     }
 
     function calc() {
-        const d = parseFloat(document.getElementById('d').value);
-        const v1 = parseFloat(document.getElementById('v1').value), v2 = parseFloat(document.getElementById('v2').value);
-        const t1 = document.getElementById('t1').value, t2 = document.getElementById('t2').value;
-        const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, adj = parseFloat(document.getElementById('adj').value)||0;
+        const d = document.getElementById('d').value;
+        const v1 = document.getElementById('v1').value;
+        const v2 = document.getElementById('v2').value;
+        const s = parseFloat(document.getElementById('s').value) || 0;
+        const h = parseFloat(document.getElementById('h').value) || 0;
+        const adj = parseFloat(document.getElementById('adj').value) || 0;
 
-        if(s === 0 && h === 0) { resetDisplay(); return; }
+        if (s === 0 && h === 0) {
+            document.getElementById('valL').innerText = "0 mm";
+            document.getElementById('valCC').innerText = "C-C: 0 mm";
+            return;
+        }
 
-        const a1 = getA(v1, t1, d), a2 = getA(v2, t2, d);
-        const offset = Math.sqrt(s*s + h*h), avgV = (v1 + v2) / 2;
+        const a1 = getBuildMeasure(v1, document.getElementById('t1').value, d);
+        const a2 = getBuildMeasure(v2, document.getElementById('t2').value, d);
+
+        const offset = Math.sqrt(s*s + h*h);
+        const avgV = (parseInt(v1) + parseInt(v2)) / 2;
         const cc = offset / Math.sin(avgV * (Math.PI/180));
-        const rawL = cc - (a1 + a2);
-        const l = Math.max(0, Math.round(rawL + adj));
-        const bygg = Math.round(offset / Math.tan(avgV * (Math.PI/180)) + a1 + a2);
+        const l = Math.round(cc - (a1 + a2) + adj);
 
-        document.getElementById('valL').innerText = l + " mm";
-        document.getElementById('valBuild').innerText = "Byggmått: " + bygg + " mm";
+        document.getElementById('valL').innerText = (l > 0 ? l : 0) + " mm";
         document.getElementById('valCC').innerText = "C-C: " + Math.round(cc) + " mm";
-        
-        const displayBox = document.getElementById('displayBox');
-        const warningLabel = document.getElementById('warningLabel');
-        if (rawL < 0) {
-            displayBox.style.borderColor = "var(--danger)";
-            warningLabel.innerText = "FÖR KORT AVSTÅND!";
-            warningLabel.style.color = "var(--danger)";
-        } else {
-            displayBox.style.borderColor = "#444";
-            warningLabel.innerText = "Kapmått L (Mellan sick)";
-            warningLabel.style.color = "var(--accent)";
-        }
-    }
-
-    function resetDisplay() {
-        document.getElementById('valL').innerText = "0 mm";
-        document.getElementById('valBuild').innerText = "Byggmått: 0 mm";
-        document.getElementById('valCC').innerText = "C-C: 0 mm";
-        document.getElementById('displayBox').style.borderColor = "#444";
-        document.getElementById('warningLabel').innerText = "Kapmått L (Mellan sick)";
-        document.getElementById('warningLabel').style.color = "var(--accent)";
-    }
-
-    function resetInputs() {
-        ['s','h','u','r'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('adj').value = '0';
-        resetDisplay();
-    }
-
-    function addQuick(name) {
-        let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt";
-        let key = `${dim} ${name}`;
-        orders[key] = (orders[key] || 0) + 1;
-        save();
-    }
-
-    function logCalculation() {
-        const l = document.getElementById('valL').innerText; if(l === "0 mm") return;
-        const tag = document.getElementById('projectTag').value || "Mått";
-        logs.unshift(`[${tag.toUpperCase()}] L:${l}`); 
-        if(logs.length > 5) logs.pop();
-        flashButton('saveBtn'); save();
-    }
-
-    function flashButton(id) { const b = document.getElementById(id); b.classList.add('btn-success-flash'); setTimeout(() => b.classList.remove('btn-success-flash'), 400); }
-    function save() { localStorage.setItem('vent_final_v23', JSON.stringify({orders, logs})); render(); }
-    function loadData() { const data = JSON.parse(localStorage.getItem('vent_final_v23') || '{}'); orders = data.orders || {}; logs = data.logs || []; render(); }
-
-    function render() {
-        const oCont = document.getElementById('orderList'); oCont.innerHTML = '';
-        for (const [k, q] of Object.entries(orders)) {
-            const div = document.createElement('div'); div.className = 'list-item';
-            div.innerHTML = `<span class="qty" onclick="updateQty('${k}')">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="removeOrder('${k}')">×</button>`;
-            oCont.appendChild(div);
-        }
-        document.getElementById('logList').innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${l}</span></div>`).join('');
-    }
-
-    function updateQty(k) {
-        let n = prompt(`Antal för ${k}:`, orders[k]);
-        if(n !== null && !isNaN(n)) { orders[k] = parseInt(n); if(orders[k] <= 0) delete orders[k]; save(); }
-    }
-
-    function removeOrder(k) { delete orders[k]; save(); }
-    function clearOrders() { if(confirm("Tömma listan?")) { orders = {}; save(); } }
-
-    function copyOrder() {
-        let tag = document.getElementById('projectTag').value;
-        let t = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
-        for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
-        if (Object.keys(orders).length === 0) return;
-        navigator.clipboard.writeText(t).then(() => { flashButton('copyBtn'); alert("Kopierat!"); });
+        document.getElementById('displayBox').style.borderColor = l < 0 ? "var(--danger)" : "#444";
     }
 </script>
 </body>
