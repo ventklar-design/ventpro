@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Elite - Multi Brand v2.2</title>
+    <title>VentPro Elite v2.4</title>
     <style>
         :root { 
             --accent: #fbc531; --bg: #0d0d0d; --card: #181818; --input: #252525; 
@@ -12,11 +12,11 @@
         }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; touch-action: manipulation; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; transform: translateZ(0); }
-        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; transition: border-color 0.2s; }
-        .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
-        .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 8px; }
-        .res-extra { font-size: 0.9rem; color: var(--accent); font-weight: bold; }
+        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; }
+        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; }
+        .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase; }
+        .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin: 5px 0; }
+        .res-extra { font-size: 0.8rem; color: #888; }
 
         .tab-row { display: flex; gap: 8px; margin-bottom: 12px; }
         .tab-btn { flex: 1; padding: 10px; border: 1px solid #333; border-radius: 8px; background: transparent; color: #555; font-weight: 800; text-transform: uppercase; font-size: 0.65rem; cursor: pointer; }
@@ -27,10 +27,6 @@
         label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
         input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; width: 100%; outline: none; }
         
-        .type-select-container { transition: opacity 0.3s; }
-        .type-disabled { opacity: 0.3; pointer-events: none; }
-
-        /* Kalkylator-sektion */
         .calc-wrapper { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #333; }
         .calc-screen { background: #000; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
         #calcDisplay { font-family: monospace; font-size: 1.2rem; color: var(--accent); }
@@ -45,7 +41,6 @@
         .plus-btn { border: none; color: #fff; padding: 10px 2px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-b { background: var(--btn-bend); } .btn-r { background: var(--btn-pipe); } .btn-p { background: var(--btn-part); } .btn-o { background: var(--btn-other); }
 
-        /* Manuellt tillägg */
         .manual-add { display: flex; gap: 5px; margin: 15px 0; }
         .manual-add input { flex: 1; font-size: 0.8rem; padding: 10px; border-radius: 8px; }
         .add-text-btn { background: var(--accent); color: #000; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
@@ -54,8 +49,7 @@
         .list-item { display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #222; font-size: 0.8rem; }
         .qty { background: var(--accent); color: #000; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-right: 10px; }
         .del-btn { color: var(--danger); background: none; border: none; font-size: 1.2rem; margin-left: auto; cursor: pointer; }
-        .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
-        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .calc-btn-main { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
         .clear-log-btn { background: none; border: none; color: var(--danger); font-size: 0.6rem; font-weight: 800; text-transform: uppercase; cursor: pointer; padding: 10px; width: 100%; text-align: right; opacity: 0.7; }
     </style>
 </head>
@@ -70,12 +64,12 @@
     <div class="display-area" id="mainDisplay">
         <div class="res-label">Kapmått L (Mellan sickar)</div>
         <div class="res-main" id="valL">0 mm</div>
-        <div class="res-extra" id="valBuild">Byggmått: 0 mm</div>
+        <div id="infoBox" class="res-extra">Välj mått ovan</div>
     </div>
 
     <div class="tab-row">
-        <button id="tr" class="tab-btn active" onclick="setMode('rund')">RUND</button>
-        <button id="tk" class="tab-btn" onclick="setMode('rekt')">REKT</button>
+        <button id="tr" class="tab-btn active" onclick="setMode('rund')">RUND (Ø)</button>
+        <button id="tk" class="tab-btn" onclick="setMode('rekt')">REKT (r)</button>
     </div>
 
     <div class="grid">
@@ -86,8 +80,8 @@
                 <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
             </select>
         </div>
-        <div id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" oninput="ar();calc()"></div>
-        <div id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" oninput="calc()"></div>
+        <div id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" placeholder="mm" oninput="ar();calc()"></div>
+        <div id="r-box" style="display:none;"><label>Radie (r)</label><input type="number" id="r" placeholder="mm" oninput="calc()"></div>
         <div><label>Justera (+/-)</label><input type="number" id="adj" value="0" oninput="calc()"></div>
 
         <div><label>Vinkel 1</label>
@@ -95,7 +89,7 @@
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div id="t1-container" class="type-select-container"><label id="lblT1">Typ 1 (BU/BKFU)</label>
+        <div id="t1-container"><label id="lblT1">Typ 1 (BU/BKFU)</label>
             <select id="t1" onchange="calc()">
                 <option value="normal">Normal</option><option value="kort">Kort</option>
             </select>
@@ -106,7 +100,7 @@
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div id="t2-container" class="type-select-container"><label id="lblT2">Typ 2 (BU/BKFU)</label>
+        <div id="t2-container"><label id="lblT2">Typ 2 (BU/BKFU)</label>
             <select id="t2" onchange="calc()">
                 <option value="normal">Normal</option><option value="kort">Kort</option>
             </select>
@@ -133,7 +127,7 @@
         </div>
     </div>
 
-    <button class="calc-btn" onclick="log()">Beräkna & Spara</button>
+    <button class="calc-btn-main" onclick="log()">Spara Beräkning</button>
 </div>
 
 <div class="order-section">
@@ -145,21 +139,18 @@
         <button class="plus-btn btn-b" onclick="add('45° Böj')">45° B</button>
         <button class="plus-btn btn-b" onclick="add('30° Böj')">30° B</button>
         <button class="plus-btn btn-b" onclick="add('15° Böj')">15° B</button>
-
         <button class="plus-btn btn-r" onclick="add('Rör 3m')">Rör 3m</button>
         <button class="plus-btn btn-r" onclick="add('T-Rör')">T-Rör</button>
-        <button class="plus-btn btn-r" onclick="add('Gängstång M8')">M8 Gäng</button>
-        <button class="plus-btn btn-r" onclick="add('Gängstång M10')">M10 Gäng</button>
-
+        <button class="plus-btn btn-r" onclick="add('M8 Gängstång')">M8 Gäng</button>
+        <button class="plus-btn btn-r" onclick="add('M10 Gängstång')">M10 Gäng</button>
         <button class="plus-btn btn-p" onclick="add('Muff')">Muff</button>
         <button class="plus-btn btn-p" onclick="add('Nippel')">Nippel</button>
         <button class="plus-btn btn-p" onclick="add('Skjutmuff')">Skjutmuff</button>
-        <button class="plus-btn btn-p" onclick="add('Dimensionsför.')">Dim-förs.</button>
-
+        <button class="plus-btn btn-p" onclick="add('Dim-förs.')">Dim-förs.</button>
         <button class="plus-btn btn-o" onclick="add('Iris')">Iris</button>
         <button class="plus-btn btn-o" onclick="add('Gavel')">Gavel</button>
         <button class="plus-btn btn-o" onclick="add('Inlopp')">Inlopp</button>
-        <button class="plus-btn btn-o" onclick="add('Montageskruv')">Skruv</button>
+        <button class="plus-btn btn-o" onclick="add('Skruv')">Skruv</button>
     </div>
 
     <div class="manual-add">
@@ -168,7 +159,7 @@
     </div>
 
     <div id="orderList" class="list-container"></div>
-    <button class="copy-btn" onclick="copy()">Kopiera till SMS</button>
+    <button class="calc-btn-main" style="background:#222; color:var(--accent); border:1px solid var(--accent); margin-top:15px;" onclick="copy()">Kopiera SMS</button>
 </div>
 
 <div style="width:100%; max-width:480px;">
@@ -179,17 +170,16 @@
 <script>
     let mode = 'rund', brand = 'lindab', orders = {}, logs = [], cExpr = '';
     const db = {
-        lindab: {
+        lindab: { 
             normal: { 100:{90:100, 60:58, 45:41, 30:27, 15:13}, 125:{90:125, 60:72, 45:52, 30:33, 15:17}, 160:{90:160, 60:92, 45:66, 30:43, 15:21}, 200:{90:200, 60:115, 45:83, 30:54, 15:27}, 250:{90:242, 60:144, 45:104, 30:67, 15:33}, 315:{90:315, 60:182, 45:130, 30:84, 15:42}, 400:{90:400, 60:231, 45:166, 30:107, 15:53}, 500:{90:500, 60:289, 45:207, 30:134, 15:66}, 630:{90:630, 60:364, 45:261, 30:169, 15:83} },
             kort: { 100:{90:62}, 125:{90:79}, 160:{90:94}, 200:{90:158}, 250:{90:180}, 315:{90:220}, 400:{90:255}, 500:{90:315}, 630:{90:397} }
         },
-        hallstrom: {
+        hallstrom: { 
             normal: { 100:{90:100, 60:58, 45:41, 30:27, 15:13}, 125:{90:125, 60:72, 45:52, 30:33, 15:16}, 160:{90:160, 60:92, 45:66, 30:43, 15:21}, 200:{90:200, 60:115, 45:83, 30:54, 15:26}, 250:{90:250, 60:144, 45:104, 30:67, 15:33}, 315:{90:315, 60:182, 45:130, 30:84, 15:41}, 400:{90:400, 60:231, 45:166, 30:107, 15:53}, 500:{90:500, 60:289, 45:207, 30:134, 15:66}, 630:{90:630, 60:364, 45:261, 30:169, 15:83} },
             kort: { 100:{90:60}, 125:{90:73}, 160:{90:95}, 200:{90:112}, 250:{90:160}, 315:{90:195}, 400:{90:240}, 500:{90:314}, 630:{90:385} }
         }
     };
 
-    /* Kalkylator-logik */
     function cInp(v) { if(v==='C'){cExpr='';} else {cExpr+=v;} document.getElementById('calcDisplay').innerText = cExpr || '0'; }
     function cEval() { try { cExpr = eval(cExpr).toString(); document.getElementById('calcDisplay').innerText = cExpr; } catch { cExpr = 'Fel'; document.getElementById('calcDisplay').innerText = cExpr; cExpr = ''; } }
     function useCalc(field) { const val = parseFloat(cExpr); if(!isNaN(val)) { document.getElementById(field).value = val; calc(); } }
@@ -197,59 +187,68 @@
     function updateTypeVisibility() {
         const v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
         const t1c = document.getElementById('t1-container'), t2c = document.getElementById('t2-container');
-        if(v1 !== "90") document.getElementById('t1').value = "normal";
-        if(v2 !== "90") document.getElementById('t2').value = "normal";
-        t1c.className = v1 === "90" ? "type-select-container" : "type-select-container type-disabled";
-        t2c.className = v2 === "90" ? "type-select-container" : "type-select-container type-disabled";
+        if(mode === 'rund') {
+            if(v1 !== "90") document.getElementById('t1').value = "normal";
+            if(v2 !== "90") document.getElementById('t2').value = "normal";
+            t1c.style.opacity = v1 === "90" ? "1" : "0.3";
+            t2c.style.opacity = v2 === "90" ? "1" : "0.3";
+        } else { t1c.style.opacity = "0.3"; t2c.style.opacity = "0.3"; }
     }
 
     function setBrand(b) { 
         brand = b; document.getElementById('brandL').classList.toggle('brand-active', b === 'lindab'); 
         document.getElementById('brandH').classList.toggle('brand-active', b === 'hallstrom'); 
-        document.getElementById('lblT1').innerText = `Typ 1 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; 
-        document.getElementById('lblT2').innerText = `Typ 2 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; calc(); 
+        const suffix = b==='lindab'?' (BU/BKFU)':' (BS/BK)';
+        document.getElementById('lblT1').innerText = 'Typ 1' + suffix;
+        document.getElementById('lblT2').innerText = 'Typ 2' + suffix;
+        calc(); 
     }
-
+    
     function setMode(t) { 
         mode = t; document.getElementById('d-box').style.display = t==='rund'?'block':'none';
         document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; 
         document.getElementById('r-box').style.display = t==='rekt'?'block':'none';
         document.getElementById('tr').classList.toggle('active', t==='rund'); 
-        document.getElementById('tk').classList.toggle('active', t==='rekt'); calc(); 
+        document.getElementById('tk').classList.toggle('active', t==='rekt'); 
+        updateTypeVisibility(); calc(); 
     }
 
     function ar() { const u = parseFloat(document.getElementById('u').value); if(u) document.getElementById('r').value = 100 + (u/2); }
-
+    
     function getA(v, type, d) { 
-        v = parseInt(v); if(mode === 'rekt') return (parseFloat(document.getElementById('r').value) || 0) * Math.tan((v/2)*(Math.PI/180)); 
-        if(type === 'kort' && v !== 90) return Math.round((parseInt(d) * 0.6) * Math.tan((v/2)*(Math.PI/180))); 
+        v = parseInt(v); 
+        if(mode === 'rekt') {
+            const radie = parseFloat(document.getElementById('r').value) || 125;
+            let ben = 130; 
+            if(brand === 'hallstrom') { ben = (v >= 60) ? 150 : 100; }
+            return Math.round(ben + (radie * Math.tan((v/2)*(Math.PI/180))));
+        }
         return db[brand][type][d]?.[v] || Math.round(d * Math.tan((v/2)*(Math.PI/180))); 
     }
 
     function calc() { 
-        const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value, s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, a1 = getA(v1, document.getElementById('t1').value, d), a2 = getA(v2, document.getElementById('t2').value, d), off = Math.sqrt(s*s + h*h), rad = ((parseInt(v1)+parseInt(v2))/2)*(Math.PI/180), l = Math.max(0, Math.round((off/Math.sin(rad)) - (a1+a2) + (parseFloat(document.getElementById('adj').value)||0))); 
-        document.getElementById('valL').innerText = l + " mm"; document.getElementById('valBuild').innerText = "Byggmått: " + Math.round(off/Math.tan(rad) + a1 + a2) + " mm"; 
+        const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value, s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0;
+        const a1 = getA(v1, document.getElementById('t1').value, d), a2 = getA(v2, document.getElementById('t2').value, d);
+        const off = Math.sqrt(s*s + h*h), rad = ((parseInt(v1)+parseInt(v2))/2)*(Math.PI/180);
+        const l = Math.max(0, Math.round((off/Math.sin(rad)) - (a1+a2) + (parseFloat(document.getElementById('adj').value)||0))); 
+        document.getElementById('valL').innerText = l + " mm"; 
+        const info = (mode==='rekt') ? `Rekt: ${brand.toUpperCase()} | Ben: ${brand==='hallstrom'?(parseInt(v1)>=60?150:100):130}mm` : `Rund: Ø${d} | ${brand.toUpperCase()}`;
+        document.getElementById('infoBox').innerText = info;
     }
 
     function add(n) { let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; orders[k] = (orders[k]||0)+1; save(); }
     function addManual() { const inp = document.getElementById('customItem'); if(inp.value) { orders[inp.value] = (orders[inp.value]||0)+1; inp.value = ''; save(); } }
-
     function log() { 
         const l = document.getElementById('valL').innerText, disp = document.getElementById('mainDisplay');
         if(l!=="0 mm") { 
             logs.unshift(`[${brand.toUpperCase()}] L:${l} (${mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt'})`); 
-            if(logs.length>10) logs.pop(); disp.style.borderColor = "var(--success)";
-            setTimeout(() => disp.style.borderColor = "#444", 400); save(); 
+            if(logs.length>10) logs.pop(); 
+            disp.style.borderColor = "var(--success)"; setTimeout(() => disp.style.borderColor = "#444", 400); save(); 
         } 
     }
-
-    function clearLogs() { if(confirm("Rensa alla sparade kapmått?")) { logs = []; save(); } }
-    function save() { localStorage.setItem('vent_elite_multi_v2', JSON.stringify({orders, logs, brand})); render(); }
-    function loadData() { 
-        const s = JSON.parse(localStorage.getItem('vent_elite_multi_v2')||'{}'); orders = s.orders||{}; logs = s.logs||[]; 
-        if(s.brand) setBrand(s.brand); updateTypeVisibility(); render(); 
-    }
-
+    function clearLogs() { if(confirm("Rensa historik?")) { logs = []; save(); } }
+    function save() { localStorage.setItem('vent_elite_v24', JSON.stringify({orders, logs, brand})); render(); }
+    function loadData() { const s = JSON.parse(localStorage.getItem('vent_elite_v24')||'{}'); orders = s.orders||{}; logs = s.logs||[]; if(s.brand) setBrand(s.brand); render(); }
     function render() { 
         const oList = document.getElementById('orderList'); oList.innerHTML = ''; 
         for (const [k, q] of Object.entries(orders)) { 
@@ -259,12 +258,11 @@
         }
         document.getElementById('logList').innerHTML = logs.map(x => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${x}</span></div>`).join(''); 
     }
-
     function remove(k) { delete orders[k]; save(); }
     function copy() { 
-        let t = `TILLVERKARE: ${brand.toUpperCase()}\n` + (document.getElementById('tag').value ? `PROJEKT: ${document.getElementById('tag').value.toUpperCase()}\n\n` : "BESTÄLLNING:\n"); 
+        let t = `BESTÄLLNING - ${brand.toUpperCase()}\n${document.getElementById('tag').value}\n\n`; 
         for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`; 
-        navigator.clipboard.writeText(t).then(() => alert("Kopierat!")); 
+        navigator.clipboard.writeText(t).then(() => alert("Kopierat till urklipp!")); 
     }
 </script>
 </body>
