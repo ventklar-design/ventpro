@@ -27,7 +27,6 @@
         label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
         input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; width: 100%; outline: none; }
         
-        /* Logik för inaktiva fält */
         .type-select-container { transition: opacity 0.3s; }
         .type-disabled { opacity: 0.3; pointer-events: none; }
 
@@ -42,6 +41,7 @@
         .del-btn { color: var(--danger); background: none; border: none; font-size: 1.2rem; margin-left: auto; cursor: pointer; }
         .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
         .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .clear-log-btn { background: none; border: none; color: var(--danger); font-size: 0.6rem; font-weight: 800; text-transform: uppercase; cursor: pointer; padding: 10px; width: 100%; text-align: right; opacity: 0.7; }
     </style>
 </head>
 <body onload="loadData()">
@@ -64,7 +64,7 @@
     </div>
 
     <div class="grid">
-        <div><label>Dimension</label>
+        <div id="d-box"><label>Dimension</label>
             <select id="d" onchange="calc()">
                 <option value="100">Ø100</option><option value="125">Ø125</option><option value="160" selected>Ø160</option>
                 <option value="200">Ø200</option><option value="250">Ø250</option><option value="315">Ø315</option>
@@ -103,7 +103,7 @@
     <button class="calc-btn" onclick="log()">Beräkna & Spara</button>
 </div>
 
-<div class="order-section">
+<div class="order-section" style="width:100%; max-width:480px;">
     <div class="res-label" style="text-align: center; margin-bottom: 10px;">Beställningslista</div>
     <input type="text" id="tag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px;">
 
@@ -133,7 +133,10 @@
     <button class="copy-btn" onclick="copy()">Kopiera till SMS</button>
 </div>
 
-<div id="logList" class="list-container" style="width:100%; max-width:480px; margin-bottom:40px;"></div>
+<div style="width:100%; max-width:480px;">
+    <button class="clear-log-btn" onclick="clearLogs()">× Rensa historik</button>
+    <div id="logList" class="list-container" style="margin-top:0; margin-bottom:40px;"></div>
+</div>
 
 <script>
     let mode = 'rund', brand = 'lindab', orders = {}, logs = [];
@@ -149,93 +152,64 @@
     };
 
     function updateTypeVisibility() {
-        const v1 = document.getElementById('v1').value;
-        const v2 = document.getElementById('v2').value;
-        const t1c = document.getElementById('t1-container');
-        const t2c = document.getElementById('t2-container');
-        
-        // Sätt till normal om vinkeln ändras från 90
+        const v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
+        const t1c = document.getElementById('t1-container'), t2c = document.getElementById('t2-container');
         if(v1 !== "90") document.getElementById('t1').value = "normal";
         if(v2 !== "90") document.getElementById('t2').value = "normal";
-
         t1c.className = v1 === "90" ? "type-select-container" : "type-select-container type-disabled";
         t2c.className = v2 === "90" ? "type-select-container" : "type-select-container type-disabled";
     }
 
     function setBrand(b) { 
-        brand = b; 
-        document.getElementById('brandL').classList.toggle('brand-active', b === 'lindab'); 
+        brand = b; document.getElementById('brandL').classList.toggle('brand-active', b === 'lindab'); 
         document.getElementById('brandH').classList.toggle('brand-active', b === 'hallstrom'); 
         document.getElementById('lblT1').innerText = `Typ 1 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; 
-        document.getElementById('lblT2').innerText = `Typ 2 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; 
-        calc(); 
+        document.getElementById('lblT2').innerText = `Typ 2 (${b==='lindab'?'BU/BKFU':'BS/BK'})`; calc(); 
     }
 
     function setMode(t) { 
-        mode = t; 
+        mode = t; document.getElementById('d-box').style.display = t==='rund'?'block':'none';
         document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; 
         document.getElementById('r-box').style.display = t==='rekt'?'block':'none';
         document.getElementById('tr').classList.toggle('active', t==='rund'); 
-        document.getElementById('tk').classList.toggle('active', t==='rekt'); 
-        calc(); 
+        document.getElementById('tk').classList.toggle('active', t==='rekt'); calc(); 
     }
 
-    function ar() { 
-        const u = parseFloat(document.getElementById('u').value); 
-        if(u) document.getElementById('r').value = 100 + (u/2); 
-    }
+    function ar() { const u = parseFloat(document.getElementById('u').value); if(u) document.getElementById('r').value = 100 + (u/2); }
 
     function getA(v, type, d) { 
-        v = parseInt(v); 
-        if(mode === 'rekt') return (parseFloat(document.getElementById('r').value) || 0) * Math.tan((v/2)*(Math.PI/180)); 
+        v = parseInt(v); if(mode === 'rekt') return (parseFloat(document.getElementById('r').value) || 0) * Math.tan((v/2)*(Math.PI/180)); 
         if(type === 'kort' && v !== 90) return Math.round((parseInt(d) * 0.6) * Math.tan((v/2)*(Math.PI/180))); 
         return db[brand][type][d]?.[v] || Math.round(d * Math.tan((v/2)*(Math.PI/180))); 
     }
 
     function calc() { 
         const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value, s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, a1 = getA(v1, document.getElementById('t1').value, d), a2 = getA(v2, document.getElementById('t2').value, d), off = Math.sqrt(s*s + h*h), rad = ((parseInt(v1)+parseInt(v2))/2)*(Math.PI/180), l = Math.max(0, Math.round((off/Math.sin(rad)) - (a1+a2) + (parseFloat(document.getElementById('adj').value)||0))); 
-        document.getElementById('valL').innerText = l + " mm"; 
-        document.getElementById('valBuild').innerText = "Byggmått: " + Math.round(off/Math.tan(rad) + a1 + a2) + " mm"; 
+        document.getElementById('valL').innerText = l + " mm"; document.getElementById('valBuild').innerText = "Byggmått: " + Math.round(off/Math.tan(rad) + a1 + a2) + " mm"; 
     }
 
-    function add(n) { 
-        let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; 
-        orders[k] = (orders[k]||0)+1; 
-        save(); 
-    }
+    function add(n) { let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; orders[k] = (orders[k]||0)+1; save(); }
 
     function log() { 
-        const l = document.getElementById('valL').innerText; 
-        const display = document.getElementById('mainDisplay');
+        const l = document.getElementById('valL').innerText, disp = document.getElementById('mainDisplay');
         if(l!=="0 mm") { 
             logs.unshift(`[${brand.toUpperCase()}] L:${l} (${mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt'})`); 
-            if(logs.length>5) logs.pop(); 
-            
-            // Visuell feedback
-            display.style.borderColor = "var(--success)";
-            setTimeout(() => display.style.borderColor = "#444", 400);
-            
-            save(); 
+            if(logs.length>10) logs.pop(); disp.style.borderColor = "var(--success)";
+            setTimeout(() => disp.style.borderColor = "#444", 400); save(); 
         } 
     }
 
+    function clearLogs() { if(confirm("Rensa alla sparade kapmått?")) { logs = []; save(); } }
     function save() { localStorage.setItem('vent_elite_multi', JSON.stringify({orders, logs, brand})); render(); }
-    
     function loadData() { 
-        const s = JSON.parse(localStorage.getItem('vent_elite_multi')||'{}'); 
-        orders = s.orders||{}; 
-        logs = s.logs||[]; 
-        if(s.brand) setBrand(s.brand); 
-        updateTypeVisibility();
-        render(); 
+        const s = JSON.parse(localStorage.getItem('vent_elite_multi')||'{}'); orders = s.orders||{}; logs = s.logs||[]; 
+        if(s.brand) setBrand(s.brand); updateTypeVisibility(); render(); 
     }
 
     function render() { 
-        const oList = document.getElementById('orderList'); 
-        oList.innerHTML = ''; 
+        const oList = document.getElementById('orderList'); oList.innerHTML = ''; 
         for (const [k, q] of Object.entries(orders)) { 
-            const d = document.createElement('div'); 
-            d.className = 'list-item'; 
+            const d = document.createElement('div'); d.className = 'list-item'; 
             d.innerHTML = `<span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="remove('${k}')">×</button>`; 
             oList.appendChild(d); 
         } 
@@ -243,7 +217,6 @@
     }
 
     function remove(k) { delete orders[k]; save(); }
-
     function copy() { 
         let t = `TILLVERKARE: ${brand.toUpperCase()}\n` + (document.getElementById('tag').value ? `PROJEKT: ${document.getElementById('tag').value.toUpperCase()}\n\n` : "BESTÄLLNING:\n"); 
         for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`; 
