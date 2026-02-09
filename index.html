@@ -6,48 +6,221 @@
     <title>VentPro Elite - Klar Official</title>
     <style>
         :root { 
-            --accent: #fbc531; --primary: #4a90e2; --bg: #0d0d0d; 
-            --card: #181818; --input: #252525; --success: #2ecc71; --danger: #e74c3c;
+            --accent: #fbc531; 
+            --primary: #4a90e2; 
+            --bg: #0d0d0d; 
+            --card: #181818; 
+            --input: #252525; 
+            --success: #2ecc71; 
+            --danger: #e74c3c;
         }
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; touch-action: manipulation; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; }
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            box-sizing: border-box; 
+            touch-action: manipulation; 
+        }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            color: #fff; 
+            margin: 0; 
+            padding: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .card { 
+            background: var(--card); 
+            padding: 20px; 
+            border-radius: 16px; 
+            width: 100%; 
+            max-width: 480px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
+            border: 1px solid #333; 
+            margin-bottom: 20px; 
+        }
         .display-area { 
-            background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            padding: 10px; text-align: center; position: relative; transition: border 0.3s;
+            background: #000; 
+            border-radius: 12px; 
+            min-height: 140px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            border: 2px solid #444; 
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            padding: 10px; 
+            text-align: center; 
+            position: relative;
         }
-        .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
-        .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 8px; }
-        .res-extra { font-size: 0.9rem; color: var(--accent); font-weight: bold; margin-bottom: 4px; }
-        .res-sub { font-size: 0.75rem; color: #666; font-weight: bold; }
-        .tab-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px; border: 1px solid #333; border-radius: 8px; background: transparent; color: #555; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; cursor: pointer; }
-        .tab-btn.active { border-color: var(--accent); color: var(--accent); box-shadow: inset 0 0 10px rgba(251, 197, 49, 0.1); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
-        .field { display: flex; flex-direction: column; }
-        label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; padding-left: 2px; }
-        input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; width: 100%; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--primary); }
-        .order-section { width: 100%; max-width: 480px; background: #121212; border-radius: 16px; border: 1px solid #222; padding: 15px; box-sizing: border-box; margin-bottom: 20px; }
-        .section-title { font-size: 0.75rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; font-weight: bold; text-align: center; }
-        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
-        .plus-btn { background: #1a1a1a; border: 1px solid #333; color: #ddd; padding: 10px 4px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 10px; }
-        .list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 0.85rem; }
-        .qty { background: var(--accent); color: #000; font-weight: bold; padding: 4px 10px; border-radius: 4px; margin-right: 12px; min-width: 25px; text-align: center; }
-        .del-btn { color: var(--danger); background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 0 10px; margin-left: auto; }
-        .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .clear-link { display: block; width: 100%; background: none; color: #555; border: none; margin-top: 12px; font-size: 0.7rem; cursor: pointer; text-decoration: underline; text-align: center; }
+        .res-label { 
+            font-size: 0.6rem; 
+            color: var(--accent); 
+            letter-spacing: 1.5px; 
+            font-weight: bold; 
+            margin-bottom: 2px; 
+            text-transform: uppercase; 
+        }
+        .res-main { 
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            color: #fff; 
+            line-height: 1; 
+            margin-bottom: 8px; 
+        }
+        .res-extra { 
+            font-size: 0.9rem; 
+            color: var(--accent); 
+            font-weight: bold; 
+            margin-bottom: 4px; 
+        }
+        .res-sub { 
+            font-size: 0.75rem; 
+            color: #666; 
+            font-weight: bold; 
+        }
+        .tab-row { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 15px; 
+        }
+        .tab-btn { 
+            flex: 1; 
+            padding: 12px; 
+            border: 1px solid #333; 
+            border-radius: 8px; 
+            background: transparent; 
+            color: #555; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            font-size: 0.7rem; 
+            cursor: pointer; 
+        }
+        .tab-btn.active { 
+            border-color: var(--accent); 
+            color: var(--accent); 
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            margin-bottom: 10px; 
+        }
+        .field { 
+            display: flex; 
+            flex-direction: column; 
+        }
+        label { 
+            font-size: 0.6rem; 
+            color: #888; 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            margin-bottom: 4px; 
+        }
+        input, select { 
+            padding: 14px; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+            background: var(--input); 
+            color: #fff; 
+            font-size: 1rem; 
+            width: 100%; 
+            outline: none; 
+        }
+        .order-section { 
+            width: 100%; 
+            max-width: 480px; 
+            background: #121212; 
+            border-radius: 16px; 
+            border: 1px solid #222; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+        }
+        .section-title { 
+            font-size: 0.75rem; 
+            color: var(--accent); 
+            letter-spacing: 2px; 
+            margin-bottom: 15px; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            text-align: center; 
+        }
+        .quick-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 6px; 
+        }
+        .plus-btn { 
+            background: #1a1a1a; 
+            border: 1px solid #333; 
+            color: #ddd; 
+            padding: 10px 4px; 
+            border-radius: 6px; 
+            font-size: 0.55rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+        }
+        .list-container { 
+            background: #000; 
+            border-radius: 10px; 
+            border: 1px solid #222; 
+            padding: 5px; 
+            min-height: 40px; 
+            margin-top: 10px; 
+        }
+        .list-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 10px; 
+            border-bottom: 1px solid #222; 
+            font-size: 0.85rem; 
+        }
+        .qty { 
+            background: var(--accent); 
+            color: #000; 
+            font-weight: bold; 
+            padding: 4px 10px; 
+            border-radius: 4px; 
+            margin-right: 12px; 
+        }
+        .del-btn { 
+            color: var(--danger); 
+            background: none; 
+            border: none; 
+            font-size: 1.3rem; 
+            margin-left: auto; 
+        }
+        .calc-btn { 
+            width: 100%; 
+            padding: 18px; 
+            border: none; 
+            border-radius: 10px; 
+            background: var(--success); 
+            color: #fff; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            margin-top: 10px; 
+        }
+        .copy-btn { 
+            width: 100%; 
+            background: #222; 
+            color: var(--accent); 
+            border: 1px solid var(--accent); 
+            margin-top: 15px; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body onload="loadData()">
 
 <div class="card">
     <div class="display-area" id="displayBox">
-        <div class="res-label">Kapmått L (Mellan sick)</div>
+        <div class="res-label">Kapmått L (Mellan sickar)</div>
         <div class="res-main" id="valL">0 mm</div>
         <div class="res-extra" id="valBuild">Byggmått: 0 mm</div>
         <div class="res-sub" id="valCC">C-C: 0 mm</div>
@@ -61,9 +234,15 @@
     <div class="grid">
         <div class="field" id="d-box"><label>Dimension</label>
             <select id="d" onchange="calc()">
-                <option value="100">Ø100</option><option value="125">Ø125</option><option value="160" selected>Ø160</option>
-                <option value="200">Ø200</option><option value="250">Ø250</option><option value="315">Ø315</option>
-                <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
+                <option value="100">Ø100</option>
+                <option value="125">Ø125</option>
+                <option value="160" selected>Ø160</option>
+                <option value="200">Ø200</option>
+                <option value="250">Ø250</option>
+                <option value="315">Ø315</option>
+                <option value="400">Ø400</option>
+                <option value="500">Ø500</option>
+                <option value="630">Ø630</option>
             </select>
         </div>
         <div class="field" id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" inputmode="decimal" placeholder="mm" oninput="ar();calc()"></div>
@@ -72,23 +251,33 @@
         
         <div class="field"><label>Vinkel 1</label>
             <select id="v1" onchange="calc()">
-                <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
+                <option value="90">90°</option>
+                <option value="60">60°</option>
+                <option value="45" selected>45°</option>
+                <option value="30">30°</option>
+                <option value="15">15°</option>
             </select>
         </div>
         <div class="field"><label>Typ 1</label>
             <select id="t1" onchange="calc()">
-                <option value="BS">Normal (BS)</option><option value="BK">Kort (HIBK)</option>
+                <option value="BS">Normal (BS)</option>
+                <option value="BK">Kort (HIBK)</option>
             </select>
         </div>
 
         <div class="field"><label>Vinkel 2</label>
             <select id="v2" onchange="calc()">
-                <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
+                <option value="90">90°</option>
+                <option value="60">60°</option>
+                <option value="45" selected>45°</option>
+                <option value="30">30°</option>
+                <option value="15">15°</option>
             </select>
         </div>
         <div class="field"><label>Typ 2</label>
             <select id="t2" onchange="calc()">
-                <option value="BS">Normal (BS)</option><option value="BK">Kort (HIBK)</option>
+                <option value="BS">Normal (BS)</option>
+                <option value="BK">Kort (HIBK)</option>
             </select>
         </div>
 
@@ -100,7 +289,7 @@
 
 <div class="order-section">
     <div class="section-title">Beställningslista</div>
-    <input type="text" id="projectTag" placeholder="Märkning..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px;">
+    <input type="text" id="projectTag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px; font-size:0.8rem;">
     <div class="quick-grid">
         <button class="plus-btn" onclick="addQuick('90° B')">90° B</button>
         <button class="plus-btn" onclick="addQuick('45° B')">45° B</button>
@@ -119,7 +308,10 @@
 <div id="logList" class="list-container" style="width:100%; max-width:480px; margin-bottom: 40px;"></div>
 
 <script>
-    let mode = 'rund', orders = {}, logs = [];
+    let mode = 'rund';
+    let orders = {};
+    let logs = [];
+
     const hallstromData = {
         BK: { 
             100: {90:60, r:60}, 125: {90:73, r:73}, 160: {90:95, r:95}, 200: {90:112, r:120},
@@ -138,12 +330,26 @@
         }
     };
 
-    function setMode(t) { mode = t; document.getElementById('d-box').style.display = t==='rund'?'block':'none'; document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; document.getElementById('r-box').style.display = t==='rekt'?'block':'none'; document.getElementById('tr').classList.toggle('active', t==='rund'); document.getElementById('tk').classList.toggle('active', t==='rekt'); calc(); }
-    function ar() { const u=parseFloat(document.getElementById('u').value); if(u) document.getElementById('r').value = 100 + (u/2); }
+    function setMode(t) { 
+        mode = t; 
+        document.getElementById('d-box').style.display = t==='rund'?'block':'none'; 
+        document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; 
+        document.getElementById('r-box').style.display = t==='rekt'?'block':'none'; 
+        document.getElementById('tr').classList.toggle('active', t==='rund'); 
+        document.getElementById('tk').classList.toggle('active', t==='rekt'); 
+        calc(); 
+    }
+
+    function ar() { 
+        const u = parseFloat(document.getElementById('u').value); 
+        if(u) document.getElementById('r').value = 100 + (u/2); 
+    }
 
     function getA(v, type, d) {
         v = parseInt(v);
-        if(mode === 'rekt') return (parseFloat(document.getElementById('r').value)||0) * Math.tan((v/2)*(Math.PI/180));
+        if(mode === 'rekt') {
+            return (parseFloat(document.getElementById('r').value)||0) * Math.tan((v/2)*(Math.PI/180));
+        }
         const dData = hallstromData[type][d];
         if (type === 'BS' && dData[v]) return dData[v];
         if (type === 'BK') {
@@ -154,34 +360,76 @@
     }
 
     function calc() {
-        const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
-        const t1 = document.getElementById('t1').value, t2 = document.getElementById('t2').value;
-        const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, adj = parseFloat(document.getElementById('adj').value)||0;
+        const d = document.getElementById('d').value;
+        const v1 = document.getElementById('v1').value;
+        const v2 = document.getElementById('v2').value;
+        const t1 = document.getElementById('t1').value;
+        const t2 = document.getElementById('t2').value;
+        const s = parseFloat(document.getElementById('s').value)||0;
+        const h = parseFloat(document.getElementById('h').value)||0;
+        const adj = parseFloat(document.getElementById('adj').value)||0;
+
         if(s === 0 && h === 0) return;
-        const a1 = getA(v1, t1, d), a2 = getA(v2, t2, d);
-        const offset = Math.sqrt(s*s + h*h), avgV = (parseInt(v1) + parseInt(v2)) / 2;
+
+        const a1 = getA(v1, t1, d);
+        const a2 = getA(v2, t2, d);
+        const offset = Math.sqrt(s*s + h*h);
+        const avgV = (parseInt(v1) + parseInt(v2)) / 2;
         const cc = offset / Math.sin(avgV * (Math.PI/180));
         const l = Math.max(0, Math.round(cc - (a1 + a2) + adj));
+
         document.getElementById('valL').innerText = l + " mm";
         document.getElementById('valBuild').innerText = "Byggmått: " + Math.round(offset / Math.tan(avgV * (Math.PI/180)) + a1 + a2) + " mm";
         document.getElementById('valCC').innerText = "C-C: " + Math.round(cc) + " mm";
     }
 
-    function addQuick(name) { let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt"; let key = `${dim} ${name}`; orders[key] = (orders[key] || 0) + 1; save(); }
-    function logCalculation() { const l = document.getElementById('valL').innerText; if(l === "0 mm") return; const tag = document.getElementById('projectTag').value || "Mått"; logs.unshift(`[${tag.toUpperCase()}] L:${l}`); if(logs.length > 5) logs.pop(); save(); }
-    function save() { localStorage.setItem('vent_final_v1', JSON.stringify({orders, logs})); render(); }
-    function loadData() { const d = JSON.parse(localStorage.getItem('vent_final_v1') || '{}'); orders = d.orders || {}; logs = d.logs || []; render(); }
+    function addQuick(name) { 
+        let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt"; 
+        let key = `${dim} ${name}`; 
+        orders[key] = (orders[key] || 0) + 1; 
+        save(); 
+    }
+
+    function logCalculation() { 
+        const l = document.getElementById('valL').innerText; 
+        if(l === "0 mm") return; 
+        const tag = document.getElementById('projectTag').value || "Mått"; 
+        logs.unshift(`[${tag.toUpperCase()}] L:${l}`); 
+        if(logs.length > 5) logs.pop(); 
+        save(); 
+    }
+
+    function save() { 
+        localStorage.setItem('vent_final_v2', JSON.stringify({orders, logs})); 
+        render(); 
+    }
+
+    function loadData() { 
+        const d = JSON.parse(localStorage.getItem('vent_final_v2') || '{}'); 
+        orders = d.orders || {}; 
+        logs = d.logs || []; 
+        render(); 
+    }
+
     function render() {
-        const oCont = document.getElementById('orderList'); oCont.innerHTML = '';
+        const oCont = document.getElementById('orderList'); 
+        oCont.innerHTML = '';
         for (const [k, q] of Object.entries(orders)) {
             oCont.innerHTML += `<div class="list-item"><span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="removeOrder('${k}')">×</button></div>`;
         }
         document.getElementById('logList').innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${l}</span></div>`).join('');
     }
-    function removeOrder(k) { delete orders[k]; save(); }
+
+    function removeOrder(k) { 
+        delete orders[k]; 
+        save(); 
+    }
+
     function copyOrder() {
-        let t = "BESTÄLLNING:\n"; for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
-        navigator.clipboard.writeText(t).then(() => alert("Kopierat!"));
+        let tag = document.getElementById('projectTag').value;
+        let t = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
+        for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
+        navigator.clipboard.writeText(t).then(() => alert("Kopierat till urklipp!"));
     }
 </script>
 </body>
