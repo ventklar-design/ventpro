@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Elite - Multi Brand</title>
+    <title>VentPro Elite - Multi Brand v2.2</title>
     <style>
         :root { 
             --accent: #fbc531; --bg: #0d0d0d; --card: #181818; --input: #252525; 
@@ -30,10 +30,25 @@
         .type-select-container { transition: opacity 0.3s; }
         .type-disabled { opacity: 0.3; pointer-events: none; }
 
+        /* Kalkylator-sektion */
+        .calc-wrapper { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #333; }
+        .calc-screen { background: #000; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
+        #calcDisplay { font-family: monospace; font-size: 1.2rem; color: var(--accent); }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .c-btn { padding: 12px; border-radius: 6px; border: none; background: #333; color: #fff; font-weight: bold; cursor: pointer; }
+        .c-btn.op { background: #444; color: var(--accent); }
+        .c-btn.eq { background: var(--accent); color: #000; grid-column: span 2; }
+        .use-btn { background: var(--success); color: #fff; padding: 5px 8px; border-radius: 4px; font-size: 0.6rem; margin-left: 4px; cursor: pointer; border: none; font-weight: bold; }
+
         .order-section { width: 100%; max-width: 480px; background: #121212; border-radius: 16px; border: 1px solid #222; padding: 15px; margin-bottom: 20px; }
         .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .plus-btn { border: none; color: #fff; padding: 10px 2px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-b { background: var(--btn-bend); } .btn-r { background: var(--btn-pipe); } .btn-p { background: var(--btn-part); } .btn-o { background: var(--btn-other); }
+
+        /* Manuellt tillägg */
+        .manual-add { display: flex; gap: 5px; margin: 15px 0; }
+        .manual-add input { flex: 1; font-size: 0.8rem; padding: 10px; border-radius: 8px; }
+        .add-text-btn { background: var(--accent); color: #000; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
 
         .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 15px; }
         .list-item { display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #222; font-size: 0.8rem; }
@@ -80,7 +95,7 @@
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div id="t1-container" class="type-select-container"><label id="lblT1">Typ 1 (BU)</label>
+        <div id="t1-container" class="type-select-container"><label id="lblT1">Typ 1 (BU/BKFU)</label>
             <select id="t1" onchange="calc()">
                 <option value="normal">Normal</option><option value="kort">Kort</option>
             </select>
@@ -91,7 +106,7 @@
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div id="t2-container" class="type-select-container"><label id="lblT2">Typ 2 (BU)</label>
+        <div id="t2-container" class="type-select-container"><label id="lblT2">Typ 2 (BU/BKFU)</label>
             <select id="t2" onchange="calc()">
                 <option value="normal">Normal</option><option value="kort">Kort</option>
             </select>
@@ -100,10 +115,28 @@
         <div><label>Sido (S)</label><input type="number" id="s" placeholder="mm" oninput="calc()"></div>
         <div><label>Höjd (H)</label><input type="number" id="h" placeholder="mm" oninput="calc()"></div>
     </div>
+
+    <div class="calc-wrapper">
+        <div class="calc-screen">
+            <div id="calcDisplay">0</div>
+            <div>
+                <button class="use-btn" onclick="useCalc('s')">S</button>
+                <button class="use-btn" onclick="useCalc('h')">H</button>
+            </div>
+        </div>
+        <div class="calc-grid">
+            <button class="c-btn" onclick="cInp('7')">7</button><button class="c-btn" onclick="cInp('8')">8</button><button class="c-btn" onclick="cInp('9')">9</button><button class="c-btn op" onclick="cInp('/')">/</button>
+            <button class="c-btn" onclick="cInp('4')">4</button><button class="c-btn" onclick="cInp('5')">5</button><button class="c-btn" onclick="cInp('6')">6</button><button class="c-btn op" onclick="cInp('*')">*</button>
+            <button class="c-btn" onclick="cInp('1')">1</button><button class="c-btn" onclick="cInp('2')">2</button><button class="c-btn" onclick="cInp('3')">3</button><button class="c-btn op" onclick="cInp('-')">-</button>
+            <button class="c-btn" onclick="cInp('0')">0</button><button class="c-btn op" onclick="cInp('.')">.</button><button class="c-btn op" onclick="cInp('+')">+</button><button class="c-btn op" onclick="cInp('C')" style="color:var(--danger)">C</button>
+            <button class="c-btn eq" onclick="cEval()">=</button>
+        </div>
+    </div>
+
     <button class="calc-btn" onclick="log()">Beräkna & Spara</button>
 </div>
 
-<div class="order-section" style="width:100%; max-width:480px;">
+<div class="order-section">
     <div class="res-label" style="text-align: center; margin-bottom: 10px;">Beställningslista</div>
     <input type="text" id="tag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px;">
 
@@ -129,6 +162,11 @@
         <button class="plus-btn btn-o" onclick="add('Montageskruv')">Skruv</button>
     </div>
 
+    <div class="manual-add">
+        <input type="text" id="customItem" placeholder="Egen artikel..." style="background:var(--input); border:1px solid #444; color:#fff;">
+        <button class="add-text-btn" onclick="addManual()">LÄGG TILL</button>
+    </div>
+
     <div id="orderList" class="list-container"></div>
     <button class="copy-btn" onclick="copy()">Kopiera till SMS</button>
 </div>
@@ -139,7 +177,7 @@
 </div>
 
 <script>
-    let mode = 'rund', brand = 'lindab', orders = {}, logs = [];
+    let mode = 'rund', brand = 'lindab', orders = {}, logs = [], cExpr = '';
     const db = {
         lindab: {
             normal: { 100:{90:100, 60:58, 45:41, 30:27, 15:13}, 125:{90:125, 60:72, 45:52, 30:33, 15:17}, 160:{90:160, 60:92, 45:66, 30:43, 15:21}, 200:{90:200, 60:115, 45:83, 30:54, 15:27}, 250:{90:242, 60:144, 45:104, 30:67, 15:33}, 315:{90:315, 60:182, 45:130, 30:84, 15:42}, 400:{90:400, 60:231, 45:166, 30:107, 15:53}, 500:{90:500, 60:289, 45:207, 30:134, 15:66}, 630:{90:630, 60:364, 45:261, 30:169, 15:83} },
@@ -150,6 +188,11 @@
             kort: { 100:{90:60}, 125:{90:73}, 160:{90:95}, 200:{90:112}, 250:{90:160}, 315:{90:195}, 400:{90:240}, 500:{90:314}, 630:{90:385} }
         }
     };
+
+    /* Kalkylator-logik */
+    function cInp(v) { if(v==='C'){cExpr='';} else {cExpr+=v;} document.getElementById('calcDisplay').innerText = cExpr || '0'; }
+    function cEval() { try { cExpr = eval(cExpr).toString(); document.getElementById('calcDisplay').innerText = cExpr; } catch { cExpr = 'Fel'; document.getElementById('calcDisplay').innerText = cExpr; cExpr = ''; } }
+    function useCalc(field) { const val = parseFloat(cExpr); if(!isNaN(val)) { document.getElementById(field).value = val; calc(); } }
 
     function updateTypeVisibility() {
         const v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
@@ -189,6 +232,7 @@
     }
 
     function add(n) { let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; orders[k] = (orders[k]||0)+1; save(); }
+    function addManual() { const inp = document.getElementById('customItem'); if(inp.value) { orders[inp.value] = (orders[inp.value]||0)+1; inp.value = ''; save(); } }
 
     function log() { 
         const l = document.getElementById('valL').innerText, disp = document.getElementById('mainDisplay');
@@ -200,9 +244,9 @@
     }
 
     function clearLogs() { if(confirm("Rensa alla sparade kapmått?")) { logs = []; save(); } }
-    function save() { localStorage.setItem('vent_elite_multi', JSON.stringify({orders, logs, brand})); render(); }
+    function save() { localStorage.setItem('vent_elite_multi_v2', JSON.stringify({orders, logs, brand})); render(); }
     function loadData() { 
-        const s = JSON.parse(localStorage.getItem('vent_elite_multi')||'{}'); orders = s.orders||{}; logs = s.logs||[]; 
+        const s = JSON.parse(localStorage.getItem('vent_elite_multi_v2')||'{}'); orders = s.orders||{}; logs = s.logs||[]; 
         if(s.brand) setBrand(s.brand); updateTypeVisibility(); render(); 
     }
 
@@ -212,7 +256,7 @@
             const d = document.createElement('div'); d.className = 'list-item'; 
             d.innerHTML = `<span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="remove('${k}')">×</button>`; 
             oList.appendChild(d); 
-        } 
+        }
         document.getElementById('logList').innerHTML = logs.map(x => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${x}</span></div>`).join(''); 
     }
 
