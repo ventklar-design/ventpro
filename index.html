@@ -52,7 +52,6 @@
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             padding: 10px; 
             text-align: center; 
-            position: relative;
         }
         .res-label { 
             font-size: 0.6rem; 
@@ -191,6 +190,7 @@
             border: none; 
             font-size: 1.3rem; 
             margin-left: auto; 
+            cursor: pointer;
         }
         .calc-btn { 
             width: 100%; 
@@ -202,6 +202,7 @@
             font-weight: 900; 
             text-transform: uppercase; 
             margin-top: 10px; 
+            cursor: pointer;
         }
         .copy-btn { 
             width: 100%; 
@@ -213,6 +214,7 @@
             border-radius: 8px; 
             font-weight: bold; 
             text-transform: uppercase;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -232,7 +234,8 @@
     </div>
 
     <div class="grid">
-        <div class="field" id="d-box"><label>Dimension</label>
+        <div class="field" id="d-box">
+            <label>Dimension</label>
             <select id="d" onchange="calc()">
                 <option value="100">Ø100</option>
                 <option value="125">Ø125</option>
@@ -341,19 +344,20 @@
     }
 
     function ar() { 
-        const u = parseFloat(document.getElementById('u').value); 
-        if(u) document.getElementById('r').value = 100 + (u/2); 
+        const uVal = parseFloat(document.getElementById('u').value); 
+        if(uVal) document.getElementById('r').value = 100 + (uVal/2); 
     }
 
     function getA(v, type, d) {
         v = parseInt(v);
         if(mode === 'rekt') {
-            return (parseFloat(document.getElementById('r').value)||0) * Math.tan((v/2)*(Math.PI/180));
+            const radie = parseFloat(document.getElementById('r').value) || 0;
+            return radie * Math.tan((v/2)*(Math.PI/180));
         }
         const dData = hallstromData[type][d];
-        if (type === 'BS' && dData[v]) return dData[v];
-        if (type === 'BK') {
-            if (v === 90) return dData.90;
+        if (type === 'BS' && dData && dData[v]) return dData[v];
+        if (type === 'BK' && dData) {
+            if (v === 90) return dData[90];
             return Math.round(dData.r * Math.tan((v / 2) * (Math.PI / 180)));
         }
         return Math.round(d * Math.tan((v / 2) * (Math.PI / 180)));
@@ -365,11 +369,16 @@
         const v2 = document.getElementById('v2').value;
         const t1 = document.getElementById('t1').value;
         const t2 = document.getElementById('t2').value;
-        const s = parseFloat(document.getElementById('s').value)||0;
-        const h = parseFloat(document.getElementById('h').value)||0;
-        const adj = parseFloat(document.getElementById('adj').value)||0;
+        const s = parseFloat(document.getElementById('s').value) || 0;
+        const h = parseFloat(document.getElementById('h').value) || 0;
+        const adj = parseFloat(document.getElementById('adj').value) || 0;
 
-        if(s === 0 && h === 0) return;
+        if(s === 0 && h === 0) {
+            document.getElementById('valL').innerText = "0 mm";
+            document.getElementById('valBuild').innerText = "Byggmått: 0 mm";
+            document.getElementById('valCC').innerText = "C-C: 0 mm";
+            return;
+        }
 
         const a1 = getA(v1, t1, d);
         const a2 = getA(v2, t2, d);
@@ -387,49 +396,61 @@
         let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt"; 
         let key = `${dim} ${name}`; 
         orders[key] = (orders[key] || 0) + 1; 
-        save(); 
+        saveData(); 
     }
 
     function logCalculation() { 
-        const l = document.getElementById('valL').innerText; 
-        if(l === "0 mm") return; 
+        const resL = document.getElementById('valL').innerText; 
+        if(resL === "0 mm") return; 
         const tag = document.getElementById('projectTag').value || "Mått"; 
-        logs.unshift(`[${tag.toUpperCase()}] L:${l}`); 
+        logs.unshift(`[${tag.toUpperCase()}] L:${resL}`); 
         if(logs.length > 5) logs.pop(); 
-        save(); 
+        saveData(); 
     }
 
-    function save() { 
-        localStorage.setItem('vent_final_v2', JSON.stringify({orders, logs})); 
-        render(); 
+    function saveData() { 
+        localStorage.setItem('vent_final_stable', JSON.stringify({orders, logs})); 
+        renderAll(); 
     }
 
     function loadData() { 
-        const d = JSON.parse(localStorage.getItem('vent_final_v2') || '{}'); 
-        orders = d.orders || {}; 
-        logs = d.logs || []; 
-        render(); 
+        const saved = JSON.parse(localStorage.getItem('vent_final_stable') || '{}'); 
+        orders = saved.orders || {}; 
+        logs = saved.logs || []; 
+        renderAll(); 
     }
 
-    function render() {
-        const oCont = document.getElementById('orderList'); 
-        oCont.innerHTML = '';
-        for (const [k, q] of Object.entries(orders)) {
-            oCont.innerHTML += `<div class="list-item"><span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="removeOrder('${k}')">×</button></div>`;
+    function renderAll() {
+        const orderList = document.getElementById('orderList'); 
+        orderList.innerHTML = '';
+        for (const [item, qty] of Object.entries(orders)) {
+            const div = document.createElement('div');
+            div.className = 'list-item';
+            div.innerHTML = `<span class="qty">${qty}</span><span style="flex:1">${item}</span><button class="del-btn" onclick="removeOrder('${item}')">×</button>`;
+            orderList.appendChild(div);
         }
-        document.getElementById('logList').innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${l}</span></div>`).join('');
+        const logList = document.getElementById('logList');
+        logList.innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${l}</span></div>`).join('');
     }
 
-    function removeOrder(k) { 
-        delete orders[k]; 
-        save(); 
+    function removeOrder(item) { 
+        delete orders[item]; 
+        saveData(); 
     }
 
     function copyOrder() {
-        let tag = document.getElementById('projectTag').value;
-        let t = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
-        for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
-        navigator.clipboard.writeText(t).then(() => alert("Kopierat till urklipp!"));
+        const tag = document.getElementById('projectTag').value;
+        let text = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
+        for (const [item, qty] of Object.entries(orders)) {
+            text += `${qty}st ${item}\n`;
+        }
+        if (Object.keys(orders).length === 0) {
+            alert("Listan är tom!");
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Kopierat till SMS!");
+        });
     }
 </script>
 </body>
