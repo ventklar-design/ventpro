@@ -154,4 +154,35 @@
     }
 
     function calc() {
-        const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.
+        const d = document.getElementById('d').value, v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
+        const t1 = document.getElementById('t1').value, t2 = document.getElementById('t2').value;
+        const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, adj = parseFloat(document.getElementById('adj').value)||0;
+        if(s === 0 && h === 0) return;
+        const a1 = getA(v1, t1, d), a2 = getA(v2, t2, d);
+        const offset = Math.sqrt(s*s + h*h), avgV = (parseInt(v1) + parseInt(v2)) / 2;
+        const cc = offset / Math.sin(avgV * (Math.PI/180));
+        const l = Math.max(0, Math.round(cc - (a1 + a2) + adj));
+        document.getElementById('valL').innerText = l + " mm";
+        document.getElementById('valBuild').innerText = "Byggmått: " + Math.round(offset / Math.tan(avgV * (Math.PI/180)) + a1 + a2) + " mm";
+        document.getElementById('valCC').innerText = "C-C: " + Math.round(cc) + " mm";
+    }
+
+    function addQuick(name) { let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt"; let key = `${dim} ${name}`; orders[key] = (orders[key] || 0) + 1; save(); }
+    function logCalculation() { const l = document.getElementById('valL').innerText; if(l === "0 mm") return; const tag = document.getElementById('projectTag').value || "Mått"; logs.unshift(`[${tag.toUpperCase()}] L:${l}`); if(logs.length > 5) logs.pop(); save(); }
+    function save() { localStorage.setItem('vent_final_v1', JSON.stringify({orders, logs})); render(); }
+    function loadData() { const d = JSON.parse(localStorage.getItem('vent_final_v1') || '{}'); orders = d.orders || {}; logs = d.logs || []; render(); }
+    function render() {
+        const oCont = document.getElementById('orderList'); oCont.innerHTML = '';
+        for (const [k, q] of Object.entries(orders)) {
+            oCont.innerHTML += `<div class="list-item"><span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="removeOrder('${k}')">×</button></div>`;
+        }
+        document.getElementById('logList').innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${l}</span></div>`).join('');
+    }
+    function removeOrder(k) { delete orders[k]; save(); }
+    function copyOrder() {
+        let t = "BESTÄLLNING:\n"; for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
+        navigator.clipboard.writeText(t).then(() => alert("Kopierat!"));
+    }
+</script>
+</body>
+</html>
