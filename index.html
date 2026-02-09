@@ -13,6 +13,10 @@
             --input: #252525; 
             --success: #2ecc71; 
             --danger: #e74c3c;
+            --btn-bend: #ff9f43;
+            --btn-pipe: #54a0ff;
+            --btn-part: #5f27cd;
+            --btn-other: #48dbfb;
         }
         * { 
             -webkit-tap-highlight-color: transparent; 
@@ -53,169 +57,39 @@
             padding: 10px; 
             text-align: center; 
         }
-        .res-label { 
-            font-size: 0.6rem; 
-            color: var(--accent); 
-            letter-spacing: 1.5px; 
-            font-weight: bold; 
-            margin-bottom: 2px; 
-            text-transform: uppercase; 
-        }
-        .res-main { 
-            font-size: 2.8rem; 
-            font-weight: 900; 
-            color: #fff; 
-            line-height: 1; 
-            margin-bottom: 8px; 
-        }
-        .res-extra { 
-            font-size: 0.9rem; 
-            color: var(--accent); 
-            font-weight: bold; 
-            margin-bottom: 4px; 
-        }
-        .res-sub { 
-            font-size: 0.75rem; 
-            color: #666; 
-            font-weight: bold; 
-        }
-        .tab-row { 
-            display: flex; 
-            gap: 8px; 
-            margin-bottom: 15px; 
-        }
-        .tab-btn { 
-            flex: 1; 
-            padding: 12px; 
-            border: 1px solid #333; 
-            border-radius: 8px; 
-            background: transparent; 
-            color: #555; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            font-size: 0.7rem; 
-            cursor: pointer; 
-        }
-        .tab-btn.active { 
-            border-color: var(--accent); 
-            color: var(--accent); 
-        }
-        .grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            margin-bottom: 10px; 
-        }
-        .field { 
-            display: flex; 
-            flex-direction: column; 
-        }
-        label { 
-            font-size: 0.6rem; 
-            color: #888; 
-            text-transform: uppercase; 
-            font-weight: 800; 
-            margin-bottom: 4px; 
-        }
-        input, select { 
-            padding: 14px; 
-            border-radius: 8px; 
-            border: 1px solid #333; 
-            background: var(--input); 
-            color: #fff; 
-            font-size: 1rem; 
-            width: 100%; 
-            outline: none; 
-        }
-        .order-section { 
-            width: 100%; 
-            max-width: 480px; 
-            background: #121212; 
-            border-radius: 16px; 
-            border: 1px solid #222; 
-            padding: 15px; 
-            margin-bottom: 20px; 
-        }
-        .section-title { 
-            font-size: 0.75rem; 
-            color: var(--accent); 
-            letter-spacing: 2px; 
-            margin-bottom: 15px; 
-            text-transform: uppercase; 
-            font-weight: bold; 
-            text-align: center; 
-        }
-        .quick-grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 6px; 
-        }
-        .plus-btn { 
-            background: #1a1a1a; 
-            border: 1px solid #333; 
-            color: #ddd; 
-            padding: 10px 4px; 
-            border-radius: 6px; 
-            font-size: 0.55rem; 
-            font-weight: bold; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-        }
-        .list-container { 
-            background: #000; 
-            border-radius: 10px; 
-            border: 1px solid #222; 
-            padding: 5px; 
-            min-height: 40px; 
-            margin-top: 10px; 
-        }
-        .list-item { 
-            display: flex; 
-            align-items: center; 
-            padding: 10px; 
-            border-bottom: 1px solid #222; 
-            font-size: 0.85rem; 
-        }
-        .qty { 
-            background: var(--accent); 
-            color: #000; 
-            font-weight: bold; 
-            padding: 4px 10px; 
-            border-radius: 4px; 
-            margin-right: 12px; 
-        }
-        .del-btn { 
-            color: var(--danger); 
-            background: none; 
-            border: none; 
-            font-size: 1.3rem; 
-            margin-left: auto; 
-            cursor: pointer;
-        }
-        .calc-btn { 
-            width: 100%; 
-            padding: 18px; 
-            border: none; 
-            border-radius: 10px; 
-            background: var(--success); 
-            color: #fff; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            margin-top: 10px; 
-            cursor: pointer;
-        }
-        .copy-btn { 
-            width: 100%; 
-            background: #222; 
-            color: var(--accent); 
-            border: 1px solid var(--accent); 
-            margin-top: 15px; 
-            padding: 15px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            text-transform: uppercase;
-            cursor: pointer;
-        }
+        .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
+        .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 8px; }
+        .res-extra { font-size: 0.9rem; color: var(--accent); font-weight: bold; margin-bottom: 4px; }
+        .res-sub { font-size: 0.75rem; color: #666; font-weight: bold; }
+
+        .tab-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 12px; border: 1px solid #333; border-radius: 8px; background: transparent; color: #555; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; cursor: pointer; }
+        .tab-btn.active { border-color: var(--accent); color: var(--accent); }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+        .field { display: flex; flex-direction: column; }
+        label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
+        input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; width: 100%; outline: none; }
+
+        .order-section { width: 100%; max-width: 480px; background: #121212; border-radius: 16px; border: 1px solid #222; padding: 15px; margin-bottom: 20px; }
+        .section-title { font-size: 0.75rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; font-weight: bold; text-align: center; }
+        
+        /* SNYGGA FÄRGADE KNAPPAR */
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .plus-btn { border: none; color: #fff; padding: 12px 4px; border-radius: 8px; font-size: 0.6rem; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+        .plus-btn:active { transform: scale(0.95); }
+        .btn-b { background: var(--btn-bend); }
+        .btn-r { background: var(--btn-pipe); }
+        .btn-p { background: var(--btn-part); }
+        .btn-o { background: var(--btn-other); }
+
+        .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 15px; }
+        .list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 0.85rem; }
+        .qty { background: var(--accent); color: #000; font-weight: bold; padding: 4px 10px; border-radius: 4px; margin-right: 12px; }
+        .del-btn { color: var(--danger); background: none; border: none; font-size: 1.3rem; margin-left: auto; cursor: pointer; }
+
+        .calc-btn { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
+        .copy-btn { width: 100%; background: #222; color: var(--accent); border: 1px solid var(--accent); margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
     </style>
 </head>
 <body onload="loadData()">
@@ -234,18 +108,11 @@
     </div>
 
     <div class="grid">
-        <div class="field" id="d-box">
-            <label>Dimension</label>
+        <div class="field" id="d-box"><label>Dimension</label>
             <select id="d" onchange="calc()">
-                <option value="100">Ø100</option>
-                <option value="125">Ø125</option>
-                <option value="160" selected>Ø160</option>
-                <option value="200">Ø200</option>
-                <option value="250">Ø250</option>
-                <option value="315">Ø315</option>
-                <option value="400">Ø400</option>
-                <option value="500">Ø500</option>
-                <option value="630">Ø630</option>
+                <option value="100">Ø100</option><option value="125">Ø125</option><option value="160" selected>Ø160</option>
+                <option value="200">Ø200</option><option value="250">Ø250</option><option value="315">Ø315</option>
+                <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
             </select>
         </div>
         <div class="field" id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" inputmode="decimal" placeholder="mm" oninput="ar();calc()"></div>
@@ -254,57 +121,49 @@
         
         <div class="field"><label>Vinkel 1</label>
             <select id="v1" onchange="calc()">
-                <option value="90">90°</option>
-                <option value="60">60°</option>
-                <option value="45" selected>45°</option>
-                <option value="30">30°</option>
-                <option value="15">15°</option>
+                <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
         <div class="field"><label>Typ 1</label>
             <select id="t1" onchange="calc()">
-                <option value="BS">Normal (BS)</option>
-                <option value="BK">Kort (HIBK)</option>
+                <option value="BS">Normal (BS)</option><option value="BK">Kort (HIBK)</option>
             </select>
         </div>
 
         <div class="field"><label>Vinkel 2</label>
             <select id="v2" onchange="calc()">
-                <option value="90">90°</option>
-                <option value="60">60°</option>
-                <option value="45" selected>45°</option>
-                <option value="30">30°</option>
-                <option value="15">15°</option>
+                <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
         <div class="field"><label>Typ 2</label>
             <select id="t2" onchange="calc()">
-                <option value="BS">Normal (BS)</option>
-                <option value="BK">Kort (HIBK)</option>
+                <option value="BS">Normal (BS)</option><option value="BK">Kort (HIBK)</option>
             </select>
         </div>
 
         <div class="field"><label>S-Mått Sido</label><input type="number" id="s" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
         <div class="field"><label>S-Mått Höjd</label><input type="number" id="h" inputmode="decimal" placeholder="mm" oninput="calc()"></div>
     </div>
-    <button class="calc-btn" id="saveBtn" onclick="logCalculation()">Beräkna & Spara Historik</button>
+    <button class="calc-btn" onclick="logCalculation()">Beräkna & Spara Historik</button>
 </div>
 
 <div class="order-section">
     <div class="section-title">Beställningslista</div>
     <input type="text" id="projectTag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px; font-size:0.8rem;">
+    
     <div class="quick-grid">
-        <button class="plus-btn" onclick="addQuick('90° B')">90° B</button>
-        <button class="plus-btn" onclick="addQuick('45° B')">45° B</button>
-        <button class="plus-btn" onclick="addQuick('Rör 3m')">Rör</button>
-        <button class="plus-btn" onclick="addQuick('T-Rör')">T-Rör</button>
-        <button class="plus-btn" onclick="addQuick('Iris')">Iris</button>
-        <button class="plus-btn" onclick="addQuick('Muff')">Muff</button>
-        <button class="plus-btn" onclick="addQuick('Nippel')">Nip</button>
-        <button class="plus-btn" onclick="addQuick('Gavel')">Gavel</button>
+        <button class="plus-btn btn-b" onclick="addQuick('90° Böj')">90° B</button>
+        <button class="plus-btn btn-b" onclick="addQuick('45° Böj')">45° B</button>
+        <button class="plus-btn btn-r" onclick="addQuick('Rör 3m')">Rör 3m</button>
+        <button class="plus-btn btn-r" onclick="addQuick('T-Rör')">T-Rör</button>
+        <button class="plus-btn btn-p" onclick="addQuick('Muff')">Muff</button>
+        <button class="plus-btn btn-p" onclick="addQuick('Nippel')">Nippel</button>
+        <button class="plus-btn btn-o" onclick="addQuick('Iris')">Iris</button>
+        <button class="plus-btn btn-o" onclick="addQuick('Gavel')">Gavel</button>
     </div>
+
     <div id="orderList" class="list-container"></div>
-    <button class="copy-btn" id="copyBtn" onclick="copyOrder()">Kopiera till SMS</button>
+    <button class="copy-btn" onclick="copyOrder()">Kopiera till SMS</button>
 </div>
 
 <div class="section-title" style="color:#444;">Historik</div>
@@ -316,20 +175,9 @@
     let logs = [];
 
     const hallstromData = {
-        BK: { 
-            100: {90:60, r:60}, 125: {90:73, r:73}, 160: {90:95, r:95}, 200: {90:112, r:120},
-            250: {90:160, r:150}, 315: {90:195, r:190}, 400: {90:240, r:240}, 500: {90:314, r:300}, 630: {90:385, r:378}
-        },
+        BK: { 100: {90:60, r:60}, 125: {90:73, r:73}, 160: {90:95, r:95}, 200: {90:112, r:120}, 250: {90:160, r:150}, 315: {90:195, r:190}, 400: {90:240, r:240}, 500: {90:314, r:300}, 630: {90:385, r:378} },
         BS: { 
-            100: {90:100, 60:58, 45:41, 30:27, 15:13},
-            125: {90:125, 60:72, 45:52, 30:33, 15:16},
-            160: {90:160, 60:92, 45:66, 30:43, 15:21},
-            200: {90:200, 60:115, 45:83, 30:54, 15:26},
-            250: {90:250, 60:144, 45:104, 30:67, 15:33},
-            315: {90:315, 60:182, 45:130, 30:84, 15:41},
-            400: {90:400, 60:231, 45:166, 30:107, 15:53},
-            500: {90:500, 60:289, 45:207, 30:134, 15:66},
-            630: {90:630, 60:364, 45:261, 30:169, 15:83}
+            100: {90:100, 60:58, 45:41, 30:27, 15:13}, 125: {90:125, 60:72, 45:52, 30:33, 15:16}, 160: {90:160, 60:92, 45:66, 30:43, 15:21}, 200: {90:200, 60:115, 45:83, 30:54, 15:26}, 250: {90:250, 60:144, 45:104, 30:67, 15:33}, 315: {90:315, 60:182, 45:130, 30:84, 15:41}, 400: {90:400, 60:231, 45:166, 30:107, 15:53}, 500: {90:500, 60:289, 45:207, 30:134, 15:66}, 630: {90:630, 60:364, 45:261, 30:169, 15:83}
         }
     };
 
@@ -351,8 +199,8 @@
     function getA(v, type, d) {
         v = parseInt(v);
         if(mode === 'rekt') {
-            const radie = parseFloat(document.getElementById('r').value) || 0;
-            return radie * Math.tan((v/2)*(Math.PI/180));
+            const rad = parseFloat(document.getElementById('r').value) || 0;
+            return rad * Math.tan((v/2)*(Math.PI/180));
         }
         const dData = hallstromData[type][d];
         if (type === 'BS' && dData && dData[v]) return dData[v];
@@ -375,8 +223,6 @@
 
         if(s === 0 && h === 0) {
             document.getElementById('valL').innerText = "0 mm";
-            document.getElementById('valBuild').innerText = "Byggmått: 0 mm";
-            document.getElementById('valCC').innerText = "C-C: 0 mm";
             return;
         }
 
@@ -396,7 +242,7 @@
         let dim = mode === 'rund' ? "Ø" + document.getElementById('d').value : "Rekt"; 
         let key = `${dim} ${name}`; 
         orders[key] = (orders[key] || 0) + 1; 
-        saveData(); 
+        save(); 
     }
 
     function logCalculation() { 
@@ -405,52 +251,41 @@
         const tag = document.getElementById('projectTag').value || "Mått"; 
         logs.unshift(`[${tag.toUpperCase()}] L:${resL}`); 
         if(logs.length > 5) logs.pop(); 
-        saveData(); 
+        save(); 
     }
 
-    function saveData() { 
-        localStorage.setItem('vent_final_stable', JSON.stringify({orders, logs})); 
-        renderAll(); 
+    function save() { 
+        localStorage.setItem('vent_final_pro', JSON.stringify({orders, logs})); 
+        render(); 
     }
 
     function loadData() { 
-        const saved = JSON.parse(localStorage.getItem('vent_final_stable') || '{}'); 
+        const saved = JSON.parse(localStorage.getItem('vent_final_pro') || '{}'); 
         orders = saved.orders || {}; 
         logs = saved.logs || []; 
-        renderAll(); 
+        render(); 
     }
 
-    function renderAll() {
-        const orderList = document.getElementById('orderList'); 
-        orderList.innerHTML = '';
-        for (const [item, qty] of Object.entries(orders)) {
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            div.innerHTML = `<span class="qty">${qty}</span><span style="flex:1">${item}</span><button class="del-btn" onclick="removeOrder('${item}')">×</button>`;
-            orderList.appendChild(div);
+    function render() {
+        const oList = document.getElementById('orderList'); 
+        oList.innerHTML = '';
+        for (const [k, q] of Object.entries(orders)) {
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `<span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="removeOrder('${k}')">×</button>`;
+            oList.appendChild(item);
         }
-        const logList = document.getElementById('logList');
-        logList.innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${l}</span></div>`).join('');
+        document.getElementById('logList').innerHTML = logs.map(l => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${l}</span></div>`).join('');
     }
 
-    function removeOrder(item) { 
-        delete orders[item]; 
-        saveData(); 
-    }
+    function removeOrder(k) { delete orders[k]; save(); }
 
     function copyOrder() {
         const tag = document.getElementById('projectTag').value;
-        let text = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
-        for (const [item, qty] of Object.entries(orders)) {
-            text += `${qty}st ${item}\n`;
-        }
-        if (Object.keys(orders).length === 0) {
-            alert("Listan är tom!");
-            return;
-        }
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Kopierat till SMS!");
-        });
+        let t = tag ? `PROJEKT: ${tag.toUpperCase()}\n\n` : "BESTÄLLNING:\n";
+        for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
+        if(Object.keys(orders).length === 0) return alert("Listan är tom!");
+        navigator.clipboard.writeText(t).then(() => alert("Kopierat!"));
     }
 </script>
 </body>
