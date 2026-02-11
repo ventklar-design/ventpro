@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Elite v2.4</title>
+    <title>VentPro Elite v2.4 - Herr Klar Edition</title>
     <style>
         :root { 
             --accent: #fbc531; --bg: #0d0d0d; --card: #181818; --input: #252525; 
@@ -13,7 +13,7 @@
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; touch-action: manipulation; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; }
-        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; }
+        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; transition: border-color 0.3s; }
         .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase; }
         .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin: 5px 0; }
         .res-extra { font-size: 0.8rem; color: #888; }
@@ -23,10 +23,12 @@
         .tab-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(251, 197, 49, 0.1); }
         .tab-btn.brand-active { border-color: var(--success); color: var(--success); background: rgba(46, 204, 113, 0.1); }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; position: relative; }
         label { font-size: 0.6rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
         input, select { padding: 14px; border-radius: 8px; border: 1px solid #333; background: var(--input); color: #fff; font-size: 1rem; width: 100%; outline: none; }
-        
+
+        .swap-btn { position: absolute; right: 45%; bottom: 15px; background: #333; border: 1px solid #444; color: var(--accent); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; font-weight: bold; }
+
         .calc-wrapper { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #333; }
         .calc-screen { background: #000; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
         #calcDisplay { font-family: monospace; font-size: 1.2rem; color: var(--accent); }
@@ -107,6 +109,7 @@
         </div>
 
         <div><label>Sido (S)</label><input type="number" id="s" placeholder="mm" oninput="calc()"></div>
+        <div class="swap-btn" onclick="swapSH()">⇄</div>
         <div><label>Höjd (H)</label><input type="number" id="h" placeholder="mm" oninput="calc()"></div>
     </div>
 
@@ -182,7 +185,24 @@
 
     function cInp(v) { if(v==='C'){cExpr='';} else {cExpr+=v;} document.getElementById('calcDisplay').innerText = cExpr || '0'; }
     function cEval() { try { cExpr = eval(cExpr).toString(); document.getElementById('calcDisplay').innerText = cExpr; } catch { cExpr = 'Fel'; document.getElementById('calcDisplay').innerText = cExpr; cExpr = ''; } }
-    function useCalc(field) { const val = parseFloat(cExpr); if(!isNaN(val)) { document.getElementById(field).value = val; calc(); } }
+    
+    function useCalc(field) { 
+        const val = parseFloat(cExpr); 
+        if(!isNaN(val)) { 
+            document.getElementById(field).value = val; 
+            calc(); 
+            cExpr = ''; 
+            document.getElementById('calcDisplay').innerText = '0';
+        } 
+    }
+
+    function swapSH() {
+        const s = document.getElementById('s').value;
+        const h = document.getElementById('h').value;
+        document.getElementById('s').value = h;
+        document.getElementById('h').value = s;
+        calc();
+    }
 
     function updateTypeVisibility() {
         const v1 = document.getElementById('v1').value, v2 = document.getElementById('v2').value;
@@ -203,7 +223,7 @@
         document.getElementById('lblT2').innerText = 'Typ 2' + suffix;
         calc(); 
     }
-    
+
     function setMode(t) { 
         mode = t; document.getElementById('d-box').style.display = t==='rund'?'block':'none';
         document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; 
@@ -214,7 +234,7 @@
     }
 
     function ar() { const u = parseFloat(document.getElementById('u').value); if(u) document.getElementById('r').value = 100 + (u/2); }
-    
+
     function getA(v, type, d) { 
         v = parseInt(v); 
         if(mode === 'rekt') {
@@ -248,7 +268,7 @@
     }
     function clearLogs() { if(confirm("Rensa historik?")) { logs = []; save(); } }
     function save() { localStorage.setItem('vent_elite_v24', JSON.stringify({orders, logs, brand})); render(); }
-    function loadData() { const s = JSON.parse(localStorage.getItem('vent_elite_v24')||'{}'); orders = s.orders||{}; logs = s.logs||[]; if(s.brand) setBrand(s.brand); render(); }
+    function loadData() { const s = JSON.parse(localStorage.getItem('vent_elite_v24')||'{}'); orders = s.orders||{}; logs = s.logs||[]; if(s.brand) setBrand(s.brand); render(); calc(); }
     function render() { 
         const oList = document.getElementById('orderList'); oList.innerHTML = ''; 
         for (const [k, q] of Object.entries(orders)) { 
