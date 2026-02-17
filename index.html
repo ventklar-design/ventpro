@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Elite v3.2 - Herr Klar Master</title>
+    <title>VentPro Elite v3.4 - Herr Klar Master</title>
     <style>
         :root { 
             --accent: #fbc531; --bg: #0d0d0d; --card: #181818; --input: #252525; 
@@ -13,7 +13,7 @@
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; touch-action: manipulation; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .card { background: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid #333; margin-bottom: 20px; }
-        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; transition: border-color 0.3s; }
+        .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; }
         .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase; }
         .res-main { font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1; margin: 5px 0; }
         .res-extra { font-size: 0.8rem; color: #888; }
@@ -37,15 +37,10 @@
         .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .plus-btn { border: none; color: #fff; padding: 10px 2px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-b { background: var(--btn-bend); } .btn-r { background: var(--btn-pipe); } .btn-p { background: var(--btn-part); } .btn-o { background: var(--btn-other); }
-        .manual-add { display: flex; gap: 5px; margin: 15px 0; }
-        .manual-add input { flex: 1; font-size: 0.8rem; padding: 10px; border-radius: 8px; }
-        .add-text-btn { background: var(--accent); color: #000; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
         .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 15px; }
         .list-item { display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #222; font-size: 0.8rem; }
         .qty { background: var(--accent); color: #000; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-right: 10px; }
-        .del-btn { color: var(--danger); background: none; border: none; font-size: 1.2rem; margin-left: auto; cursor: pointer; }
         .calc-btn-main { width: 100%; padding: 18px; border: none; border-radius: 10px; background: var(--success); color: #fff; font-weight: 900; text-transform: uppercase; margin-top: 10px; cursor: pointer; }
-        .clear-log-btn { background: none; border: none; color: var(--danger); font-size: 0.6rem; font-weight: 800; text-transform: uppercase; cursor: pointer; padding: 10px; width: 100%; text-align: right; opacity: 0.7; }
     </style>
 </head>
 <body onload="loadData()">
@@ -57,22 +52,21 @@
     </div>
 
     <div class="display-area" id="mainDisplay">
-        <div class="res-label">Färdigt kapmått L (Inkl. instick)</div>
+        <div class="res-label">FÄRDIGT KAPMÅTT L (Mellan muffar)</div>
         <div class="res-main" id="valL">0 mm</div>
-        <div id="infoBox" class="res-extra">Mät CC mellan rördelar</div>
+        <div id="infoBox" class="res-extra">Väntar på CC-mått...</div>
     </div>
 
     <div class="tab-row">
         <button id="tr" class="tab-btn active" onclick="setMode('rund')">RUND (Ø)</button>
-        <button id="tk" class="tab-btn" onclick="setMode('rekt')">REKT (r)</button>
+        <button id="tk" class="tab-btn" onclick="setMode('rekt')">REKT (R)</button>
     </div>
 
     <div class="grid">
         <div id="d-box"><label>Dimension</label>
             <select id="d" onchange="calc()">
-                <option value="100">Ø100</option><option value="125">Ø125</option><option value="160" selected>Ø160</option>
-                <option value="200">Ø200</option><option value="250">Ø250</option><option value="315">Ø315</option>
-                <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
+                <option value="100">Ø100</option><option value="125">Ø125</option><option value="160">Ø160</option>
+                <option value="200" selected>Ø200</option><option value="250">Ø250</option><option value="315">Ø315</option>
             </select>
         </div>
         <div id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" placeholder="mm" oninput="ar();calc()"></div>
@@ -84,9 +78,9 @@
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div><label id="lblT1">Typ 1 (BU)</label>
+        <div><label>Typ 1</label>
             <select id="t1" onchange="calc()">
-                <option value="normal">Normal</option><option value="kort">Kort</option>
+                <option value="normal">Normal (BU)</option><option value="kort">Kort (BKFU)</option>
             </select>
         </div>
 
@@ -95,9 +89,9 @@
                 <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="30">30°</option><option value="15">15°</option>
             </select>
         </div>
-        <div><label id="lblT2">Typ 2 (BU)</label>
+        <div><label>Typ 2</label>
             <select id="t2" onchange="calc()">
-                <option value="normal">Normal</option><option value="kort">Kort</option>
+                <option value="normal">Normal (BU)</option><option value="kort">Kort (BKFU)</option>
             </select>
         </div>
 
@@ -107,13 +101,7 @@
     </div>
 
     <div class="calc-wrapper">
-        <div class="calc-screen">
-            <div id="calcDisplay">0</div>
-            <div>
-                <button class="use-btn" onclick="useCalc('s')">S</button>
-                <button class="use-btn" onclick="useCalc('h')">H</button>
-            </div>
-        </div>
+        <div class="calc-screen"><div id="calcDisplay">0</div><div><button class="use-btn" onclick="useCalc('s')">S</button><button class="use-btn" onclick="useCalc('h')">H</button></div></div>
         <div class="calc-grid">
             <button class="c-btn" onclick="cInp('7')">7</button><button class="c-btn" onclick="cInp('8')">8</button><button class="c-btn" onclick="cInp('9')">9</button><button class="c-btn op" onclick="cInp('/')">/</button>
             <button class="c-btn" onclick="cInp('4')">4</button><button class="c-btn" onclick="cInp('5')">5</button><button class="c-btn" onclick="cInp('6')">6</button><button class="c-btn op" onclick="cInp('*')">*</button>
@@ -126,53 +114,36 @@
 </div>
 
 <div class="order-section">
-    <div class="res-label" style="text-align: center; margin-bottom: 10px;">Beställningslista</div>
     <input type="text" id="tag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px;">
     <div class="quick-grid">
-        <button class="plus-btn btn-b" onclick="add('90° Böj')">90° B</button><button class="plus-btn btn-b" onclick="add('45° Böj')">45° B</button>
-        <button class="plus-btn btn-b" onclick="add('30° Böj')">30° B</button><button class="plus-btn btn-b" onclick="add('15° Böj')">15° B</button>
-        <button class="plus-btn btn-r" onclick="add('Rör 3m')">Rör 3m</button><button class="plus-btn btn-r" onclick="add('T-Rör')">T-Rör</button>
-        <button class="plus-btn btn-r" onclick="add('M8 Gäng')">M8 Gäng</button><button class="plus-btn btn-r" onclick="add('M10 Gäng')">M10 Gäng</button>
-        <button class="plus-btn btn-p" onclick="add('Muff')">Muff</button><button class="plus-btn btn-p" onclick="add('Nippel')">Nippel</button>
-        <button class="plus-btn btn-p" onclick="add('Skjutmuff')">Skjutmuff</button><button class="plus-btn btn-p" onclick="add('Dim-förs.')">Dim-förs.</button>
-        <button class="plus-btn btn-o" onclick="add('Iris')">Iris</button><button class="plus-btn btn-o" onclick="add('Gavel')">Gavel</button>
-        <button class="plus-btn btn-o" onclick="add('Inlopp')">Inlopp</button><button class="plus-btn btn-o" onclick="add('Skruv')">Skruv</button>
-    </div>
-    <div class="manual-add">
-        <input type="text" id="customItem" placeholder="Egen artikel...">
-        <button class="add-text-btn" onclick="addManual()">LÄGG TILL</button>
+        <button class="plus-btn btn-b" onclick="add('90° B')">90° B</button><button class="plus-btn btn-b" onclick="add('45° B')">45° B</button>
+        <button class="plus-btn btn-r" onclick="add('Rör 3m')">Rör 3m</button><button class="plus-btn btn-p" onclick="add('Muff')">Muff</button>
     </div>
     <div id="orderList" class="list-container"></div>
-    <button class="calc-btn-main" style="background:#222; color:var(--accent); border:1px solid var(--accent); margin-top:15px;" onclick="copy()">Kopiera SMS</button>
-</div>
-
-<div style="width:100%; max-width:480px;">
-    <button class="clear-log-btn" onclick="clearLogs()">× Rensa historik</button>
-    <div id="logList" class="list-container" style="margin-top:0;"></div>
 </div>
 
 <script>
     let mode = 'rund', brand = 'lindab', orders = {}, logs = [], cExpr = '';
     const db = {
         lindab: { 
-            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:17}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:27}, 250:{90:242,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:42}, 400:{90:400,60:231,45:166,30:107,15:53}, 500:{90:500,60:289,45:207,30:134,15:66}, 630:{90:630,60:364,45:261,30:169,15:83} },
-            kort: { 100:{90:62}, 125:{90:79}, 160:{90:94}, 200:{90:158}, 250:{90:180}, 315:{90:220}, 400:{90:255} }
+            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:17}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:27}, 250:{90:242,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:42} },
+            kort: { 100:{90:62}, 125:{90:79}, 160:{90:94}, 200:{90:158}, 250:{90:180}, 315:{90:220} }
         },
         hallstrom: { 
-            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:16}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:26}, 250:{90:250,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:41}, 400:{90:400,60:231,45:166,30:107,15:53} },
-            kort: { 100:{90:60}, 125:{90:73}, 160:{90:95}, 200:{90:112}, 250:{90:160}, 315:{90:195}, 400:{90:240} }
+            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:16}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:26}, 250:{90:250,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:41} },
+            kort: { 100:{90:60}, 125:{90:73}, 160:{90:95}, 200:{90:112}, 250:{90:160}, 315:{90:195} }
         }
     };
 
     function cInp(v) { if(v==='C'){cExpr='';} else {cExpr+=v;} document.getElementById('calcDisplay').innerText = cExpr || '0'; }
     function cEval() { try { cExpr = eval(cExpr).toString(); document.getElementById('calcDisplay').innerText = cExpr; } catch { cExpr = '0'; } }
-    function useCalc(field) { const val = parseFloat(cExpr); if(!isNaN(val)) { document.getElementById(field).value = val; calc(); cExpr = ''; document.getElementById('calcDisplay').innerText='0'; } }
+    function useCalc(field) { const val = parseFloat(cExpr); if(!isNaN(val)) { document.getElementById(field).value = val; calc(); cExpr = ''; } }
     function swapSH() { const s = document.getElementById('s').value, h = document.getElementById('h').value; document.getElementById('s').value = h; document.getElementById('h').value = s; calc(); }
-    function setBrand(b) { brand = b; document.getElementById('brandL').classList.toggle('brand-active', b === 'lindab'); document.getElementById('brandH').classList.toggle('brand-active', b === 'hallstrom'); document.getElementById('lblT1').innerText = b==='lindab'?'Typ 1 (BU)':'Typ 1 (BS)'; document.getElementById('lblT2').innerText = b==='lindab'?'Typ 2 (BU)':'Typ 2 (BS)'; calc(); }
+    function setBrand(b) { brand = b; document.getElementById('brandL').classList.toggle('brand-active', b === 'lindab'); document.getElementById('brandH').classList.toggle('brand-active', b === 'hallstrom'); calc(); }
     function setMode(t) { mode = t; document.getElementById('d-box').style.display = t==='rund'?'block':'none'; document.getElementById('u-box').style.display = t==='rekt'?'block':'none'; document.getElementById('r-box').style.display = t==='rekt'?'block':'none'; document.getElementById('tr').classList.toggle('active', t==='rund'); document.getElementById('tk').classList.toggle('active', t==='rekt'); calc(); }
     function ar() { const u = parseFloat(document.getElementById('u').value); if(u) document.getElementById('r').value = 100 + (u/2); }
 
-    function getA(v, type, d) { 
+    function getZ(v, type, d) { 
         v = parseInt(v); 
         if(mode === 'rekt') {
             const radie = parseFloat(document.getElementById('r').value) || 125;
@@ -182,35 +153,30 @@
         return db[brand][type][d]?.[v] || Math.round(d * Math.tan((v/2)*(Math.PI/180))); 
     }
 
+    // MATTEN SOM MATCHAR LINDABS BILD EXAKT
     function calc() { 
-        const d = document.getElementById('d').value, v1 = parseInt(document.getElementById('v1').value), v2 = parseInt(document.getElementById('v2').value);
+        const d = document.getElementById('d').value, v1 = parseInt(document.getElementById('v1').value);
         const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, adj = parseFloat(document.getElementById('adj').value)||0;
-        const z1 = getA(v1, document.getElementById('t1').value, d), z2 = getA(v2, document.getElementById('t2').value, d);
-        const totalOffset = Math.sqrt(s*s + h*h), rad1 = v1 * (Math.PI/180);
-        let l_theo = totalOffset > 0 ? (totalOffset / Math.sin(rad1)) - (z1 + z2) : 0;
-        let instick = 80; if(d >= 250) instick = 120; if(d >= 400) instick = 160;
-        const finalL = Math.max(0, Math.round(l_theo + instick + adj));
-        document.getElementById('valL').innerText = finalL + " mm";
-        document.getElementById('infoBox').innerText = mode==='rund' ? `Ø${d} | ${brand.toUpperCase()} | z:${z1}+${z2}` : `Rekt | ${brand.toUpperCase()} | r:${document.getElementById('r').value}`;
+        
+        const z1 = getZ(v1, document.getElementById('t1').value, d);
+        const z2 = getZ(parseInt(document.getElementById('v2').value), document.getElementById('t2').value, d);
+        
+        const totalOffset = Math.sqrt(Math.pow(s, 2) + Math.pow(h, 2));
+        const diagonal = totalOffset > 0 ? (totalOffset / Math.sin(v1 * (Math.PI/180))) : 0;
+        const finalL = diagonal > 0 ? (diagonal - (z1 + z2)) : 0;
+
+        const result = Math.max(0, Math.round(finalL + adj));
+        document.getElementById('valL').innerText = result + " mm";
+        document.getElementById('infoBox').innerText = `Diagonal: ${Math.round(diagonal)}mm | z: ${z1}+${z2}`;
     }
 
-    function add(n) { let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; orders[k] = (orders[k]||0)+1; save(); }
-    function addManual() { const inp = document.getElementById('customItem'); if(inp.value) { orders[inp.value] = (orders[inp.value]||0)+1; inp.value = ''; save(); } }
-    function log() { logs.unshift(`[${brand.toUpperCase()}] L:${document.getElementById('valL').innerText} (${mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt'})`); if(logs.length>10) logs.pop(); save(); }
-    function clearLogs() { if(confirm("Rensa historik?")) { logs = []; save(); } }
-    function save() { localStorage.setItem('vent_v32', JSON.stringify({orders, logs, brand})); render(); }
-    function loadData() { const s = JSON.parse(localStorage.getItem('vent_v32')||'{}'); orders = s.orders||{}; logs = s.logs||[]; if(s.brand) setBrand(s.brand); render(); calc(); }
+    function add(n) { let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; orders[k] = (orders[k]||0)+1; render(); }
+    function log() { logs.unshift(`Ø${document.getElementById('d').value} L:${document.getElementById('valL').innerText}`); render(); }
     function render() {
         const oList = document.getElementById('orderList'); oList.innerHTML = '';
-        for (const [k, q] of Object.entries(orders)) oList.innerHTML += `<div class="list-item"><span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="remove('${k}')">×</button></div>`;
-        document.getElementById('logList').innerHTML = logs.map(x => `<div class="list-item"><span style="color:#888; font-size:0.7rem;">${x}</span></div>`).join('');
+        for (const [k, q] of Object.entries(orders)) oList.innerHTML += `<div class="list-item"><span class="qty">${q}</span>${k}</div>`;
     }
-    function remove(k) { delete orders[k]; save(); }
-    function copy() { 
-        let t = `BESTÄLLNING - ${brand.toUpperCase()}\n${document.getElementById('tag').value}\n\n`;
-        for (const [k, q] of Object.entries(orders)) t += `${q}st ${k}\n`;
-        navigator.clipboard.writeText(t).then(() => alert("Kopierat!"));
-    }
+    function loadData() { calc(); }
 </script>
 </body>
 </html>
