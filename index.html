@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VentPro Elite v3.6 - Herr Klar Full Version</title>
+    <title>VentPro Elite v3.7 - Herr Klar Master</title>
     <style>
         :root { 
             --accent: #fbc531; --bg: #0d0d0d; --card: #181818; --input: #252525; 
@@ -16,7 +16,7 @@
         .display-area { background: #000; border-radius: 12px; min-height: 140px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid #444; background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); padding: 10px; text-align: center; }
         .res-label { font-size: 0.6rem; color: var(--accent); letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase; }
         .res-main { font-size: 3.2rem; font-weight: 900; color: #fff; line-height: 1; margin: 5px 0; }
-        .res-extra { font-size: 0.75rem; color: #888; }
+        .res-extra { font-size: 0.8rem; color: #aaa; line-height: 1.4; }
         .tab-row { display: flex; gap: 8px; margin-bottom: 12px; }
         .tab-btn { flex: 1; padding: 10px; border: 1px solid #333; border-radius: 8px; background: transparent; color: #555; font-weight: 800; text-transform: uppercase; font-size: 0.65rem; cursor: pointer; }
         .tab-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(251, 197, 49, 0.1); }
@@ -38,7 +38,7 @@
         .plus-btn { border: none; color: #fff; padding: 10px 2px; border-radius: 6px; font-size: 0.55rem; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-b { background: var(--btn-bend); } .btn-r { background: var(--btn-pipe); } .btn-p { background: var(--btn-part); } .btn-o { background: var(--btn-other); }
         .manual-add { display: flex; gap: 5px; margin: 15px 0; }
-        .manual-add input { flex: 1; font-size: 0.8rem; padding: 10px; border-radius: 8px; }
+        .manual-add input { flex: 1; font-size: 0.8rem; padding: 10px; border-radius: 8px; background: var(--input); border: 1px solid #333; color: #fff; }
         .add-text-btn { background: var(--accent); color: #000; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; font-size: 0.7rem; cursor: pointer; }
         .list-container { background: #000; border-radius: 10px; border: 1px solid #222; padding: 5px; min-height: 40px; margin-top: 15px; }
         .list-item { display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #222; font-size: 0.8rem; }
@@ -57,9 +57,9 @@
     </div>
 
     <div class="display-area" id="mainDisplay">
-        <div class="res-label">FÄRDIGT KAPMÅTT L (Mellan muffar)</div>
+        <div class="res-label">KAPMÅTT L (MELLAN MUFFAR)</div>
         <div class="res-main" id="valL">0 mm</div>
-        <div id="infoBox" class="res-extra">Matematik matchad mot Lindab-appen</div>
+        <div id="infoBox" class="res-extra">E-mått (Bygglängd): 0 mm<br>Diagonal: 0mm | z: 0+0</div>
     </div>
 
     <div class="tab-row">
@@ -72,7 +72,7 @@
             <select id="d" onchange="calc()">
                 <option value="100">Ø100</option><option value="125">Ø125</option><option value="160">Ø160</option>
                 <option value="200" selected>Ø200</option><option value="250">Ø250</option><option value="315">Ø315</option>
-                <option value="400">Ø400</option><option value="500">Ø500</option><option value="630">Ø630</option>
+                <option value="400">Ø400</option><option value="500">Ø500</option>
             </select>
         </div>
         <div id="u-box" style="display:none;"><label>Bredd (U)</label><input type="number" id="u" placeholder="mm" oninput="ar();calc()"></div>
@@ -107,13 +107,7 @@
     </div>
 
     <div class="calc-wrapper">
-        <div class="calc-screen">
-            <div id="calcDisplay">0</div>
-            <div>
-                <button class="use-btn" onclick="useCalc('s')">S</button>
-                <button class="use-btn" onclick="useCalc('h')">H</button>
-            </div>
-        </div>
+        <div class="calc-screen"><div id="calcDisplay">0</div><div><button class="use-btn" onclick="useCalc('s')">S</button><button class="use-btn" onclick="useCalc('h')">H</button></div></div>
         <div class="calc-grid">
             <button class="c-btn" onclick="cInp('7')">7</button><button class="c-btn" onclick="cInp('8')">8</button><button class="c-btn" onclick="cInp('9')">9</button><button class="c-btn op" onclick="cInp('/')">/</button>
             <button class="c-btn" onclick="cInp('4')">4</button><button class="c-btn" onclick="cInp('5')">5</button><button class="c-btn" onclick="cInp('6')">6</button><button class="c-btn op" onclick="cInp('*')">*</button>
@@ -126,7 +120,6 @@
 </div>
 
 <div class="order-section">
-    <div class="res-label" style="text-align: center; margin-bottom: 10px;">Beställningslista</div>
     <input type="text" id="tag" placeholder="Märkning (t.ex. Plan 2)..." style="width:100%; padding:12px; margin-bottom:12px; background:var(--input); border:1px solid #444; color:#fff; border-radius:8px;">
     <div class="quick-grid">
         <button class="plus-btn btn-b" onclick="add('90° Böj')">90° B</button><button class="plus-btn btn-b" onclick="add('45° Böj')">45° B</button>
@@ -155,12 +148,12 @@
     let mode = 'rund', brand = 'lindab', orders = {}, logs = [], cExpr = '';
     const db = {
         lindab: { 
-            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:17}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:27}, 250:{90:242,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:42}, 400:{90:400,60:231,45:166,30:107,15:53} },
-            kort: { 100:{90:62}, 125:{90:79}, 160:{90:94}, 200:{90:158}, 250:{90:180}, 315:{90:220}, 400:{90:255} }
+            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:17}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:27}, 250:{90:242,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:42} },
+            kort: { 100:{90:62}, 125:{90:79}, 160:{90:94}, 200:{90:158}, 250:{90:180}, 315:{90:220} }
         },
         hallstrom: { 
-            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:16}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:26}, 250:{90:250,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:41}, 400:{90:400,60:231,45:166,30:107,15:53} },
-            kort: { 100:{90:60}, 125:{90:73}, 160:{90:95}, 200:{90:112}, 250:{90:160}, 315:{90:195}, 400:{90:240} }
+            normal: { 100:{90:100,60:58,45:41,30:27,15:13}, 125:{90:125,60:72,45:52,30:33,15:16}, 160:{90:160,60:92,45:66,30:43,15:21}, 200:{90:200,60:115,45:83,30:54,15:26}, 250:{90:250,60:144,45:104,30:67,15:33}, 315:{90:315,60:182,45:130,30:84,15:41} },
+            kort: { 100:{90:60}, 125:{90:73}, 160:{90:95}, 200:{90:112}, 250:{90:160}, 315:{90:195} }
         }
     };
 
@@ -187,18 +180,23 @@
         const s = parseFloat(document.getElementById('s').value)||0, h = parseFloat(document.getElementById('h').value)||0, adj = parseFloat(document.getElementById('adj').value)||0;
         const z1 = getZ(v1, document.getElementById('t1').value, d), z2 = getZ(v2, document.getElementById('t2').value, d);
         const totalOffset = Math.sqrt(s*s + h*h);
-        const diagonal = totalOffset > 0 ? (totalOffset / Math.sin(v1 * (Math.PI/180))) : 0;
-        const result = Math.max(0, Math.round(diagonal - (z1 + z2) + adj));
-        document.getElementById('valL').innerText = result + " mm";
-        document.getElementById('infoBox').innerText = `Diagonal: ${Math.round(diagonal)}mm | z: ${z1}+${z2}`;
+        const vRad = v1 * (Math.PI/180);
+        const diagonal = totalOffset > 0 ? (totalOffset / Math.sin(vRad)) : 0;
+        
+        // E-mått beräkning som matchar Lindab
+        const E = totalOffset > 0 ? Math.round(totalOffset / Math.tan(vRad) + (z1 + z2) * Math.sin(vRad)) : 0;
+        const resultL = diagonal > 0 ? Math.round(diagonal - (z1 + z2) + adj) : 0;
+
+        document.getElementById('valL').innerText = (resultL > 0 ? resultL : 0) + " mm";
+        document.getElementById('infoBox').innerHTML = `E-mått (Bygglängd): <b>${E} mm</b><br>Diagonal: ${Math.round(diagonal)}mm | z: ${z1}+${z2}`;
     }
 
     function add(n) { let k = (mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt')+' '+n; orders[k] = (orders[k]||0)+1; save(); }
     function addManual() { const inp = document.getElementById('customItem'); if(inp.value) { orders[inp.value] = (orders[inp.value]||0)+1; inp.value = ''; save(); } }
     function log() { logs.unshift(`[${brand.toUpperCase()}] L:${document.getElementById('valL').innerText} (${mode==='rund'?'Ø'+document.getElementById('d').value:'Rekt'})`); if(logs.length>10) logs.pop(); save(); }
     function clearLogs() { if(confirm("Rensa historik?")) { logs = []; save(); } }
-    function save() { localStorage.setItem('vent_v36', JSON.stringify({orders, logs, brand})); render(); }
-    function loadData() { const s = JSON.parse(localStorage.getItem('vent_v36')||'{}'); orders = s.orders||{}; logs = s.logs||[]; if(s.brand) setBrand(s.brand); render(); calc(); }
+    function save() { localStorage.setItem('vent_v37', JSON.stringify({orders, logs, brand})); render(); }
+    function loadData() { const s = JSON.parse(localStorage.getItem('vent_v37')||'{}'); orders = s.orders||{}; logs = s.logs||[]; if(s.brand) setBrand(s.brand); render(); calc(); }
     function render() {
         const oList = document.getElementById('orderList'); oList.innerHTML = '';
         for (const [k, q] of Object.entries(orders)) oList.innerHTML += `<div class="list-item"><span class="qty">${q}</span><span style="flex:1">${k}</span><button class="del-btn" onclick="remove('${k}')">×</button></div>`;
